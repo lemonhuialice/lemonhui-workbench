@@ -1,11 +1,16 @@
 // Lemonhui Workbench - Service Worker
-const CACHE_NAME = 'lemonhui-v2';
+const CACHE_NAME = 'lemonhui-v3';
+
+// Auto-detect base path for subdirectory support (GitHub Pages)
+const swPath = self.location.pathname;
+const basePath = swPath.substring(0, swPath.lastIndexOf('/') + 1);
+
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  basePath,
+  basePath + 'index.html',
+  basePath + 'manifest.json',
+  basePath + 'icon-192.png',
+  basePath + 'icon-512.png'
 ];
 
 // Install - cache all assets
