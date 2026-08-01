@@ -316,6 +316,57 @@ body {
 .sc-journal:hover, .sc-journal.active { border-color: var(--pink); background: linear-gradient(135deg, #FFEBF5, #FFDEEA); }
 .sc-journal::after { background: var(--pink); }
 
+/* English subnav cards */
+.sc-tasks { background: linear-gradient(135deg, #FFF8F5, #FFEFE8); border-color: #FFE8D6; }
+.sc-tasks:hover, .sc-tasks.active { border-color: var(--coral); background: linear-gradient(135deg, #FFF3EB, #FFE4D6); }
+.sc-tasks::after { background: var(--coral); }
+.sc-speaking { background: linear-gradient(135deg, #F5FAFF, #E8F2FF); border-color: #E0ECFF; }
+.sc-speaking:hover, .sc-speaking.active { border-color: var(--blue); background: linear-gradient(135deg, #EBF5FF, #DEEAFF); }
+.sc-speaking::after { background: var(--blue); }
+.sc-resources { background: linear-gradient(135deg, #F5FFF5, #E8F9E8); border-color: #E0F5E0; }
+.sc-resources:hover, .sc-resources.active { border-color: var(--green); background: linear-gradient(135deg, #EBF9EB, #DEF5DE); }
+.sc-resources::after { background: var(--green); }
+.sc-checkin { background: linear-gradient(135deg, #FBF5FF, #F3E8FF); border-color: #EDE0FF; }
+.sc-checkin:hover, .sc-checkin.active { border-color: var(--purple); background: linear-gradient(135deg, #F5EBFF, #EDE0FF); }
+.sc-checkin::after { background: var(--purple); }
+
+/* Daily phrase card */
+.daily-phrase-card {
+  background: linear-gradient(135deg, #FFF8F5, #FFF0EB);
+  border: 2px solid var(--coral-light);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+.daily-phrase-en { font-size: 1.15rem; font-weight: 700; color: var(--coral); line-height: 1.5; }
+.daily-phrase-zh { font-size: 0.85rem; color: var(--text2); margin-top: 6px; }
+.daily-phrase-use { font-size: 0.78rem; color: var(--text3); margin-top: 8px; font-style: italic; }
+
+/* Dialogue card */
+.dialogue-line { padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; font-size: 0.85rem; line-height: 1.5; }
+.dialogue-line.a { background: var(--blue-light); margin-right: 40px; }
+.dialogue-line.b { background: var(--coral-light); margin-left: 40px; }
+.dialogue-speaker { font-size: 0.7rem; font-weight: 700; color: var(--text3); margin-bottom: 2px; }
+
+/* Vocab grid */
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.vocab-item { background: var(--bg-card2); border-radius: 8px; padding: 10px 12px; border: 1px solid var(--border); }
+.vocab-word { font-weight: 600; font-size: 0.88rem; color: var(--text); }
+.vocab-def { font-size: 0.75rem; color: var(--text2); margin-top: 2px; }
+
+/* Check-in grid (similar to exercise grid) */
+.checkin-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin: 12px 0; }
+.checkin-day {
+  aspect-ratio: 1; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; background: var(--bg); color: var(--text3);
+  border: 1px solid var(--border); position: relative;
+}
+.checkin-day.done { background: var(--coral-light); color: var(--coral); font-weight: 600; border-color: var(--coral); }
+.checkin-day.today { border: 2px solid var(--coral); box-shadow: 0 0 0 3px var(--coral-light); }
+.checkin-day .check-emoji { position: absolute; bottom: 1px; right: 2px; font-size: 0.5rem; }
+.checkin-streak { font-size: 0.78rem; color: var(--coral); font-weight: 600; }
+
 /* Exercise Grid */
 .exercise-grid {
   display: grid;
@@ -648,90 +699,126 @@ body {
     <!-- ==================== ENGLISH SECTION ==================== -->
     <section class="section" id="section-english">
       <div class="section-hero">
-        <h2>🎙️ 英语角</h2>
-        <p>英语口语练习 · 播客 · 视频素材</p>
+        <h2>🗣️ 英语口语工作台</h2>
+        <p>雅思6.5 · 六级562 · 每日15分钟口语打卡</p>
       </div>
 
-      <div class="card">
-        <div class="card-title" style="margin-bottom:12px;"><span class="emoji">🎧</span>推荐播客 Podcasts</div>
-        <div class="resource-card">
-          <div class="resource-icon" style="background:var(--coral-light);">🇬🇧</div>
-          <div class="resource-info">
-            <div class="resource-name">BBC 6 Minute English <span class="tag tag-coral" style="font-size:0.65rem;margin-left:4px;">本周精选</span></div>
-            <div class="resource-desc">2026年8月1日更新：每集6分钟，话题覆盖科技/气候/职场，结尾复盘核心词汇，A2-B2友好</div>
-            <div class="resource-link"><a href="https://www.bbc.co.uk/learningenglish/english/features/6-minute-english" target="_blank" style="color:var(--blue);">bbc.co.uk/learningenglish →</a></div>
-          </div>
+      <!-- 四大板块卡片导航 -->
+      <div class="subnav-cards cols-4" id="english-nav-cards">
+        <div class="subnav-card sc-tasks active" onclick="switchEnglishTab('tasks')">
+          <span class="sc-emoji">📋</span><span class="sc-label">今日任务</span>
         </div>
-        <div class="resource-card">
-          <div class="resource-icon" style="background:var(--blue-light);">🇺🇸</div>
-          <div class="resource-info">
-            <div class="resource-name">All Ears English Podcast <span class="tag tag-coral" style="font-size:0.65rem;margin-left:4px;">本周精选</span></div>
-            <div class="resource-desc">Lindsay & Michelle主持，"Connection, not perfection"理念，美式idiom+跨文化沟通技巧</div>
-            <div class="resource-link"><a href="https://www.allearsenglish.com" target="_blank" style="color:var(--blue);">allearsenglish.com →</a></div>
-          </div>
+        <div class="subnav-card sc-speaking" onclick="switchEnglishTab('speaking')">
+          <span class="sc-emoji">🎤</span><span class="sc-label">口语练习</span>
         </div>
-        <div class="resource-card">
-          <div class="resource-icon" style="background:var(--green-light);">🇺🇸</div>
-          <div class="resource-info">
-            <div class="resource-name">Real English Conversations <span class="tag tag-coral" style="font-size:0.65rem;margin-left:4px;">本周精选</span></div>
-            <div class="resource-desc">Amy & Curtis主持真实对话场景，沉浸式speaking+listening训练，适合积累自然口语表达</div>
-            <div class="resource-link"><a href="https://realenglishconversations.com" target="_blank" style="color:var(--blue);">realenglishconversations.com →</a></div>
-          </div>
+        <div class="subnav-card sc-resources" onclick="switchEnglishTab('resources')">
+          <span class="sc-emoji">🎧</span><span class="sc-label">学习资源</span>
         </div>
-        <div class="resource-card">
-          <div class="resource-icon" style="background:var(--pink-light);">🇬🇧</div>
-          <div class="resource-info">
-            <div class="resource-name">The English We Speak (BBC)</div>
-            <div class="resource-desc">每集3分钟专讲一个地道表达，如"throw shade""bite the bullet"，碎片时间积累俚语</div>
-            <div class="resource-link"><a href="https://www.bbc.co.uk/learningenglish/english/features/the-english-we-speak" target="_blank" style="color:var(--blue);">bbc.co.uk/learningenglish →</a></div>
-          </div>
+        <div class="subnav-card sc-checkin" onclick="switchEnglishTab('checkin')">
+          <span class="sc-emoji">🔥</span><span class="sc-label">打卡记录</span>
         </div>
-        <div class="resource-card">
-          <div class="resource-icon" style="background:var(--orange-light);">🇺🇸</div>
-          <div class="resource-info">
-            <div class="resource-name">Think Fast, Talk Smart</div>
-            <div class="resource-desc">斯坦福商学院热门播客，学英语也学沟通表达，适合中高级学习者拓展职场表达</div>
-            <div class="resource-link"><a href="https://www.gsb.stanford.edu/insights/think-fast-talk-smart-podcast" target="_blank" style="color:var(--blue);">gsb.stanford.edu →</a></div>
+      </div>
+
+      <!-- Today's Tasks Panel -->
+      <div class="eng-panel active" id="english-tasks">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">📋</span>今日口语任务 · <span id="eng-task-date">8月1日</span></div>
+            <span class="tag tag-coral" id="eng-task-theme">日常会话</span>
+          </div>
+          <div id="eng-tasks-content"></div>
+          <div style="margin-top:16px;text-align:center;">
+            <button class="btn btn-primary" id="eng-checkin-btn" onclick="doEnglishCheckin()" style="padding:12px 36px;font-size:0.95rem;">
+              ✅ 完成今日打卡
+            </button>
+            <div style="font-size:0.75rem;color:var(--text3);margin-top:8px;" id="eng-streak-msg"></div>
           </div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title" style="margin-bottom:12px;"><span class="emoji">📺</span>YouTube 口语频道</div>
-        <div class="resource-card">
-          <div class="resource-icon" style="background:var(--purple-light);">🎬</div>
-          <div class="resource-info">
-            <div class="resource-name">Rachel's English</div>
-            <div class="resource-desc">专业美式发音训练，逐句拆分讲解连读、弱读和语调</div>
-            <div class="resource-link"><a href="https://www.youtube.com/@rachelsenglish" target="_blank" style="color:var(--blue);">youtube.com/@rachelsenglish →</a></div>
-          </div>
-        </div>
-        <div class="resource-card">
-          <div class="resource-icon" style="background:var(--teal-light);">🎤</div>
-          <div class="resource-info">
-            <div class="resource-name">TED Talks Daily</div>
-            <div class="resource-desc">各领域精彩演讲，适合中高级学习者拓展视野+提升听力</div>
-            <div class="resource-link"><a href="https://www.ted.com/talks" target="_blank" style="color:var(--blue);">ted.com/talks →</a></div>
-          </div>
-        </div>
-        <div class="resource-card">
-          <div class="resource-icon" style="background:var(--yellow-light);">🎯</div>
-          <div class="resource-info">
-            <div class="resource-name">Luke's English Podcast</div>
-            <div class="resource-desc">英国喜剧演员主持，幽默风趣，英式文化与语法深度讲解</div>
-            <div class="resource-link"><a href="https://teacherluke.co.uk" target="_blank" style="color:var(--blue);">teacherluke.co.uk →</a></div>
+      <!-- Speaking Practice Panel -->
+      <div class="eng-panel" id="english-speaking">
+        <div class="card accent-left blue">
+          <div class="card-title" style="margin-bottom:12px;"><span class="emoji">🎤</span>Shadowing 跟读训练</div>
+          <div id="eng-shadowing-content"></div>
+          <div style="margin-top:12px;font-size:0.8rem;color:var(--text2);">
+            💡 <strong>跟读三步法：</strong>① 先听一遍理解大意 → ② 逐句暂停模仿语调 → ③ 不看文本再跟读一遍
           </div>
         </div>
       </div>
 
-        <div class="card accent-left green">
-        <div class="card-title" style="margin-bottom:8px;"><span class="emoji">💡</span>学习建议 · 8月1日</div>
-        <div style="font-size:0.85rem;color:var(--text2);line-height:1.8;">
-          • 每天10-20分钟专注听力，比2小时被动收听效果好得多<br>
-          • 听三遍法：第一遍盲听 → 第二遍看字幕 → 第三遍再盲听<br>
-          • <strong>Shadowing 跟读法</strong>：暂停后逐句模仿原音语调，最能提升口语<br>
-          • 本周尝试：把一条新闻用英文复述给朋友听（5句话即可）<br>
-          • 选择80%能听懂的内容，10%挑战稍难的素材
+      <!-- Resources Panel -->
+      <div class="eng-panel" id="english-resources">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;"><span class="emoji">🎧</span>推荐播客 Podcasts</div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--coral-light);">🇬🇧</div>
+            <div class="resource-info">
+              <div class="resource-name">BBC 6 Minute English</div>
+              <div class="resource-desc">每集6分钟，话题覆盖科技/气候/职场，结尾复盘核心词汇，A2-B2友好</div>
+              <div class="resource-link"><a href="https://www.bbc.co.uk/learningenglish/english/features/6-minute-english" target="_blank" style="color:var(--blue);">bbc.co.uk/learningenglish →</a></div>
+            </div>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--blue-light);">🇺🇸</div>
+            <div class="resource-info">
+              <div class="resource-name">All Ears English Podcast</div>
+              <div class="resource-desc">"Connection, not perfection"理念，美式idiom+跨文化沟通技巧</div>
+              <div class="resource-link"><a href="https://www.allearsenglish.com" target="_blank" style="color:var(--blue);">allearsenglish.com →</a></div>
+            </div>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--pink-light);">🇬🇧</div>
+            <div class="resource-info">
+              <div class="resource-name">The English We Speak (BBC)</div>
+              <div class="resource-desc">每集3分钟专讲一个地道表达，碎片时间积累俚语</div>
+              <div class="resource-link"><a href="https://www.bbc.co.uk/learningenglish/english/features/the-english-we-speak" target="_blank" style="color:var(--blue);">bbc.co.uk/learningenglish →</a></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;"><span class="emoji">📺</span>YouTube 口语频道</div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--purple-light);">🎬</div>
+            <div class="resource-info">
+              <div class="resource-name">Rachel's English</div>
+              <div class="resource-desc">专业美式发音训练，逐句拆分讲解连读、弱读和语调</div>
+              <div class="resource-link"><a href="https://www.youtube.com/@rachelsenglish" target="_blank" style="color:var(--blue);">youtube.com/@rachelsenglish →</a></div>
+            </div>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--teal-light);">🎤</div>
+            <div class="resource-info">
+              <div class="resource-name">TED Talks Daily</div>
+              <div class="resource-desc">各领域精彩演讲，适合中高级学习者拓展视野</div>
+              <div class="resource-link"><a href="https://www.ted.com/talks" target="_blank" style="color:var(--blue);">ted.com/talks →</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Check-in Record Panel -->
+      <div class="eng-panel" id="english-checkin">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">🔥</span>打卡日历 · <span id="eng-cal-month">8月</span></div>
+            <span class="tag tag-coral" id="eng-cal-streak">连续 0 天</span>
+          </div>
+          <div class="checkin-streak" style="margin-bottom:8px;">当前连续打卡：<strong id="eng-streak-count">0</strong> 天 · 本月累计：<strong id="eng-month-count">0</strong> 天</div>
+          <div style="display:flex;gap:5px;margin-bottom:4px;font-size:0.65rem;color:var(--text3);">
+            <div style="width:calc(100%/7);text-align:center;">一</div><div style="width:calc(100%/7);text-align:center;">二</div>
+            <div style="width:calc(100%/7);text-align:center;">三</div><div style="width:calc(100%/7);text-align:center;">四</div>
+            <div style="width:calc(100%/7);text-align:center;">五</div><div style="width:calc(100%/7);text-align:center;">六</div>
+            <div style="width:calc(100%/7);text-align:center;">日</div>
+          </div>
+          <div class="checkin-grid" id="eng-checkin-grid"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;"><span class="emoji">📈</span>打卡历史</div>
+          <div id="eng-checkin-list">
+            <div style="color:var(--text3);text-align:center;padding:20px;">开始你的英语口语打卡之旅吧 🚀</div>
+          </div>
         </div>
       </div>
     </section>
@@ -1118,6 +1205,7 @@ let store = JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || {
   doneItems: [],
   exercises: [{ type: '骑车', duration: 30, date: '2026-07-15' }],
   journals: [],
+  engCheckins: [],
   currentMood: '',
   currentBookId: null
 };
@@ -1445,17 +1533,232 @@ function renderJournals() {
     </div>`).join('');
 }
 
+// ========== ENGLISH LEARNING ==========
+// 30-day rotating daily spoken English curriculum
+const ENG_CURRICULUM = [
+  { theme:'日常问候', phrase:'Long time no see! How have you been?', phraseZh:'好久不见！你最近怎么样？', phraseUse:'偶遇熟人时替代 "How are you?"，更自然', dialogue:[{r:'A',t:"Hey! Long time no see! How have you been?"},{r:'B',t:"I know, right? I've been pretty busy with work. What about you?"},{r:'A',t:"Same here. Just trying to keep up with everything."},{r:'B',t:"We should grab coffee sometime and catch up properly."}], vocab:[['catch up','叙旧，聊聊近况'],['keep up with','跟上，应付'],['grab coffee','喝杯咖啡（非正式邀约）'],['pretty busy','挺忙的'],['same here','我也是']], shadow:'Long time no see! How have you been? I know, right? We should grab coffee sometime and catch up properly.' },
+  { theme:'点餐场景', phrase:"I'll have the grilled chicken, please. Could I get that with a side salad?", phraseZh:'我要烤鸡，可以配一份沙拉吗？', phraseUse:'餐厅点餐礼貌表达，比 "I want..." 更地道', dialogue:[{r:'A',t:"Are you ready to order?"},{r:'B',t:"Yes, I'll have the grilled chicken, please. Could I get that with a side salad?"},{r:'A',t:"Sure. Anything to drink?"},{r:'B',t:"Just water for now, thanks."},{r:'A',t:"Coming right up!"}], vocab:[['side salad','配菜沙拉'],['coming right up','马上就来'],['anything to drink','喝点什么'],['ready to order','可以点餐了']], shadow:"I'll have the grilled chicken, please. Could I get that with a side salad? Just water for now, thanks." },
+  { theme:'问路指路', phrase:'Excuse me, could you tell me how to get to the nearest subway station?', phraseZh:'请问最近的地铁站怎么走？', phraseUse:'旅行必备句，比 "Where is..." 更礼貌', dialogue:[{r:'A',t:"Excuse me, could you tell me how to get to the nearest subway station?"},{r:'B',t:"Sure! Go straight for two blocks, then turn right at the traffic light."},{r:'A',t:"Two blocks and a right turn. Got it. How far is it?"},{r:'B',t:"About a 5-minute walk. You can't miss it."},{r:'A',t:"Thanks so much! Have a good one!"}], vocab:[['go straight','直走'],['traffic light','红绿灯'],["you can't miss it",'你不会错过的'],['have a good one','祝你有美好的一天'],['got it','明白了']], shadow:'Excuse me, could you tell me how to get to the nearest subway station? Go straight for two blocks, then turn right at the traffic light.' },
+  { theme:'购物砍价', phrase:"Is there any chance you could give me a discount? I'm buying two of these.", phraseZh:'有没有可能给我打个折？我买两个。', phraseUse:'购物议价的经典句型，重点在 "Is there any chance..." 开头', dialogue:[{r:'A',t:"I really like this one. Is there any chance you could give me a discount? I'm buying two."},{r:'B',t:"Hmm, let me check... Since you're buying two, I can take 10% off."},{r:'A',t:"That's very kind of you! I'll take them."},{r:'B',t:"Great choice! That'll be $45 total."}], vocab:[['take 10% off','打九折'],['kind of you','你真客气'],['great choice','好选择'],['discount','折扣']], shadow:"Is there any chance you could give me a discount? I'm buying two of these. That's very kind of you!" },
+  { theme:'约会闲聊', phrase:"So what do you do for fun when you're not working?", phraseZh:'你不工作的时候喜欢做什么？', phraseUse:'打破尴尬的万能社交句，比 "What's your hobby?" 更自然', dialogue:[{r:'A',t:"So what do you do for fun when you're not working?"},{r:'B',t:"I've been getting into hiking lately. There's this great trail about an hour from here."},{r:'A',t:"Oh nice! I've been meaning to do more outdoor stuff. Maybe I should check it out."},{r:'B',t:"You totally should! I could show you around if you want."}], vocab:[['get into','开始喜欢/投入'],['i\'ve been meaning to','我一直想...'],['check it out','去看看'],['show you around','带你转转'],['outdoor stuff','户外活动']], shadow:"So what do you do for fun when you're not working? I've been getting into hiking lately. I've been meaning to do more outdoor stuff." },
+  { theme:'表达观点', phrase:"I see where you're coming from, but I have a slightly different take on that.", phraseZh:'我理解你的出发点，但我有一点不同的看法。', phraseUse:'礼貌反驳的金句，先肯定再转折，职场必备', dialogue:[{r:'A',t:"I think we should launch the product next month. The market is ready."},{r:'B',t:"I see where you're coming from, but I have a slightly different take on that."},{r:'A',t:"Go on. What's your thinking?"},{r:'B',t:"I feel like waiting till Q4 would give us more time to refine the user experience."}], vocab:[['take on that','对...的看法'],['go on','继续说'],['refine','优化，打磨'],['user experience','用户体验'],['launch','发布']], shadow:"I see where you're coming from, but I have a slightly different take on that. I feel like waiting till Q4 would give us more time." },
+  { theme:'天气闲聊', phrase:"It's supposed to clear up later this afternoon, fingers crossed!", phraseZh:'据说下午会放晴，但愿如此！', phraseUse:''"'Fingers crossed'是英美人挂在嘴边的口头禅，意思是'祈求好运/但愿如此'"', dialogue:[{r:'A',t:"Ugh, this rain just won't let up, will it?"},{r:'B',t:"Tell me about it. But it's supposed to clear up later this afternoon, fingers crossed!"},{r:'A',t:"I hope so. I've got plans to meet some friends outdoors."},{r:'B',t:"The forecast says sunny by 3. You should be fine."}], vocab:[['clear up','放晴'],['fingers crossed','但愿如此/祈求好运'],['let up','（雨）变小，停止'],['tell me about it','谁说不是呢（表赞同）'],['forecast','天气预报']], shadow:"It's supposed to clear up later this afternoon, fingers crossed! The forecast says sunny by 3, you should be fine." },
+  { theme:'表达感谢', phrase:"I really appreciate you going out of your way to help me with this.", phraseZh:'真的很感谢你特地花时间帮我这个忙。', phraseUse:'比 "Thank you" 更有诚意，适合职场和正式场合', dialogue:[{r:'A',t:"I really appreciate you going out of your way to help me with this."},{r:'B',t:"No worries at all. I know how stressful deadlines can be."},{r:'A',t:"Seriously, I owe you one. Let me buy you lunch."},{r:'B',t:"Ha, you don't have to. But I won't say no to that."}], vocab:[['go out of your way','特地/额外费心做某事'],['owe you one','欠你一个人情'],['no worries','别客气'],['stressful','压力大的'],['say no to','拒绝']], shadow:"I really appreciate you going out of your way to help me. Seriously, I owe you one." },
+  { theme:'面试场景', phrase:"What really drew me to this role is the opportunity to work on projects that have real impact.", phraseZh:'真正吸引我的是能参与真正有影响力的项目。', phraseUse:'面试回答"Why us"的万能模板句', dialogue:[{r:'A',t:"So what made you interested in this position?"},{r:'B',t:"What really drew me to this role is the opportunity to work on projects that have real impact."},{r:'A',t:"Interesting. Can you give an example of what that means to you?"},{r:'B',t:"Sure. In my last role, I helped reduce processing time by 30%. I'd love to bring that kind of thinking here."}], vocab:[['drew me to','吸引我'],['real impact','真正的影响力'],['bring...thinking','带来...思路'],['processing time','处理时间']], shadow:"What really drew me to this role is the opportunity to work on projects that have real impact. I'd love to bring that kind of thinking here." },
+  { theme:'电话沟通', phrase:"Hi, this is [Name] calling. I'm just following up on the email I sent earlier this week.", phraseZh:'你好我是[名字]，想跟进一下我本周早些时候发的邮件。', phraseUse:'商务电话开场白，"just" 弱化语气显得不咄咄逼人', dialogue:[{r:'A',t:"Hi, this is Alex calling. I'm just following up on the email I sent earlier this week."},{r:'B',t:"Oh yes, Alex! Thanks for reaching out. I actually reviewed it yesterday."},{r:'A',t:"Great! Do you have a few minutes to discuss it now?"},{r:'B',t:"Actually, I'm about to head into a meeting. Can I call you back in an hour?"},{r:'A',t:"Of course, no rush. Talk to you then!"}], vocab:[['follow up on','跟进'],['reach out','联系'],['about to','即将要'],['no rush','不急'],['head into','进入（会议等）']], shadow:"Hi, this is Alex calling. I'm just following up on the email I sent earlier. Could we find a time to discuss?" },
+  { theme:'道歉回应', phrase:"No hard feelings. These things happen. Let's just focus on moving forward.", phraseZh:'没关系，这种事难免。我们往前看吧。', phraseUse:'被道歉时表现大度的高级回应', dialogue:[{r:'A',t:"I'm so sorry I missed the deadline. I completely dropped the ball on this one."},{r:'B',t:"No hard feelings. These things happen. Let's just focus on moving forward."},{r:'A',t:"Thanks for being so understanding. What's the next step?"},{r:'B',t:"Let's regroup tomorrow morning and come up with a revised timeline."}], vocab:[['no hard feelings','不记仇，没关系'],['these things happen','这种事难免'],['drop the ball','搞砸/失误'],['regroup','重新汇合/重整思路'],['revised timeline','修订后的时间表']], shadow:"No hard feelings. These things happen. Let's just focus on moving forward. Let's regroup and come up with a plan." },
+  { theme:'旅行问询', phrase:"I was wondering if you could recommend any hidden gems around here that most tourists miss.", phraseZh:'请问有没有什么游客不太知道的隐藏好去处？', phraseUse:'旅行中问当地人宝藏景点的完美说法', dialogue:[{r:'A',t:"I was wondering if you could recommend any hidden gems around here that most tourists miss."},{r:'B',t:"Actually, yes! There's this amazing little café tucked away in a back alley. Best coffee in town."},{r:'A',t:"That sounds exactly like what I'm looking for! How do I get there?"},{r:'B',t:"Walk past the main square, take the second left, and you'll see a tiny sign. Trust me, it's worth it."}], vocab:[['hidden gem','隐藏的宝藏/好去处'],['tucked away','藏在...'],['back alley','小巷'],["worth it",'值得的'],['tiny','很小的']], shadow:"I was wondering if you could recommend any hidden gems around here. There's this amazing little café tucked away in a back alley." },
+  { theme:'邀约拒绝', phrase:"That sounds lovely, but I'm going to have to take a rain check this time.", phraseZh:'听起来很棒，不过这次我得改天再约了。', phraseUse:'礼貌拒绝邀请，"take a rain check" 是固定表达', dialogue:[{r:'A',t:"We're having a small get-together at my place this Saturday. You should come!"},{r:'B',t:"That sounds lovely, but I'm going to have to take a rain check this time."},{r:'A',t:"Ah, too bad! Everything okay?"},{r:'B',t:"Yeah, just swamped with this project. Rain check for sure though!"}], vocab:[['take a rain check','改天再约'],['get-together','聚会'],['swamped','忙得焦头烂额'],['for sure','肯定的']], shadow:"That sounds lovely, but I'm going to have to take a rain check this time. I'm just swamped with this project." },
+  { theme:'表达困惑', phrase:"I'm not quite following. Could you walk me through that one more time?", phraseZh:'我没太跟上，能再给我讲一遍吗？', phraseUse:'没听懂时的优雅求救，比 "What?" 礼貌100倍', dialogue:[{r:'A',t:"So the algorithm basically tokenizes the input and runs it through three layers of processing."},{r:'B',t:"Sorry, I'm not quite following. Could you walk me through that one more time?"},{r:'A',t:"Of course! Let me break it down step by step..."},{r:'B',t:"Thanks, that would really help. I learn better with examples."}], vocab:[['not quite following','没太跟上'],['walk through','逐步讲解'],['break it down','拆解说明'],['step by step','一步步'],['tokenize','分词（技术术语）']], shadow:"I'm not quite following. Could you walk me through that one more time? Let me break it down step by step." },
+  { theme:'健身房', phrase:"Do you mind if I work in with you? I'll only need a couple of sets.", phraseZh:'介意我跟你轮流用吗？我只需要两组。', phraseUse:'健身房共用器械的万能句型', dialogue:[{r:'A',t:"Hey, do you mind if I work in with you? I'll only need a couple of sets."},{r:'B',t:"No problem at all! I've got two more sets anyway."},{r:'A',t:"Perfect timing then. Thanks, I appreciate it."},{r:'B',t:"Sure thing. How much weight do you need on there?"}], vocab:[['work in with','轮换使用'],['a couple of','几个/两三个'],['no problem at all','完全没问题'],['sure thing','当然'],['perfect timing','时机正好']], shadow:"Do you mind if I work in with you? I'll only need a couple of sets. No problem at all!" },
+  { theme:'抱怨委婉', phrase:"I don't mean to complain, but it's been a bit of a challenge getting this sorted out.", phraseZh:'不是我想抱怨，但解决这事确实有点费劲。', phraseUse:'用"我不抱怨"开头来温和表达不满，职场高情商', dialogue:[{r:'A',t:"How's the onboarding going? Settling in okay?"},{r:'B',t:"Honestly, I don't mean to complain, but it's been a bit of a challenge getting everything sorted out."},{r:'A',t:"I hear you. The first week can be overwhelming. What's been the trickiest part?"},{r:'B',t:"Mostly the IT setup. Once that's done I think I'll be fine."}], vocab:[["i don't mean to",'不是我想...'],['sort out','整理好，解决'],['onboarding','入职'],['overwhelming','令人应接不暇的'],['trickiest','最棘手的']], shadow:"I don't mean to complain, but it's been a bit of a challenge getting this sorted out. Once that's done I think I'll be fine." },
+  { theme:'鼓励他人', phrase:"You've got this! I know it's nerve-racking, but you've done the prep and you're more than ready.", phraseZh:'你可以的！我知道很紧张，但你已经做好了准备，完全没问题。', phraseUse:'给朋友考前/面试前打气的经典句式', dialogue:[{r:'A',t:"I'm freaking out about this presentation. What if I blank out?"},{r:'B',t:"You've got this! I know it's nerve-racking, but you've done the prep and you're more than ready."},{r:'A',t:"You think so? I keep second-guessing myself."},{r:'B',t:"Look, you know this material inside and out. Just take a deep breath and be yourself."}], vocab:[["you've got this",'你可以的/你行的'],['nerve-racking','令人紧张的'],['blank out','大脑一片空白'],['second-guess','怀疑自己'],['inside and out','了如指掌']], shadow:"You've got this! I know it's nerve-racking, but you've done the prep and you're more than ready. Just take a deep breath and be yourself." },
+  { theme:'闲聊天气', phrase:"Can't complain—the weather's been gorgeous lately. Perfect for outdoor plans.", phraseZh:'没什么可抱怨的，最近天气超好，特别适合户外活动。', phraseUse:'回答"How are you"时有内容地敷衍，适合社交场景', dialogue:[{r:'A',t:"How's your weekend been so far?"},{r:'B',t:"Can't complain — the weather's been gorgeous lately. Perfect for outdoor plans."},{r:'A',t:"I know, right? I finally got to use my bike. Feels like summer finally showed up."},{r:'B',t:"About time! Last month was nothing but rain."}], vocab:[["can't complain",'还不错/没什么可抱怨的'],['gorgeous','非常棒/美'],['outdoor plans','户外安排'],['about time','终于/也该...了'],['nothing but','全是...']], shadow:"Can't complain — the weather's been gorgeous lately, perfect for outdoor plans. I know, right? About time!" },
+  { theme:'寻求建议', phrase:"What would you do if you were in my shoes? I'm really torn between these two options.", phraseZh:'如果你是我，你会怎么做？我在两个选择之间很纠结。', phraseUse:'真诚求助的经典表达，带出选择困难的感觉', dialogue:[{r:'A',t:"What would you do if you were in my shoes? I'm really torn between staying in my current job and taking this new offer."},{r:'B',t:"That's tough. What does your gut tell you?"},{r:'A',t:"Honestly? The new offer excites me more, but it feels risky."},{r:'B',t:"Sometimes the scariest choices lead to the best outcomes. What's the worst that could happen?"}], vocab:[['in your shoes','处在你的位置'],['torn between','在...之间纠结'],['gut','直觉'],['scariest','最可怕的'],['outcome','结果']], shadow:"What would you do if you were in my shoes? I'm really torn between these two options. Sometimes the scariest choices lead to the best outcomes." },
+  { theme:'表达赞同', phrase:"You hit the nail on the head. That's exactly what I've been trying to say.", phraseZh:'你说到点子上了，这正是我想说的。', phraseUse:'强烈赞同时的地道表达，"hit the nail on the head" 是高频成语', dialogue:[{r:'A',t:"I think the main issue isn't the budget. It's that we're not communicating clearly across teams."},{r:'B',t:"You hit the nail on the head. That's exactly what I've been trying to say."},{r:'A',t:"Right? We keep throwing money at the problem instead of fixing the root cause."},{r:'B',t:"Maybe we should suggest a cross-team sync every Monday. Keep everyone on the same page."}], vocab:[['hit the nail on the head','一语中的'],['root cause','根本原因'],['cross-team','跨团队'],['on the same page','步调一致'],['throw money at','砸钱解决']], shadow:"You hit the nail on the head. That's exactly what I've been trying to say. Keep everyone on the same page." },
+  { theme:'催促委婉', phrase:"Hey, just wanted to gently nudge on this. Any updates you can share?", phraseZh:'嘿，轻轻催一下这个，有什么进展可以分享吗？', phraseUse:'职场上轻轻催人但不想显得pushy的黄金句型', dialogue:[{r:'A',t:"Hey, just wanted to gently nudge on the Q3 report. Any updates you can share?"},{r:'B',t:"Thanks for the reminder! I'm wrapping it up right now. Should have it in your inbox by EOD."},{r:'A',t:"No rush, just wanted to make sure nothing fell through the cracks."},{r:'B',t:"Appreciate it. I'll ping you as soon as it's done."}], vocab:[['nudge','轻推/提醒'],['wrapping up','收尾'],['EOD','= end of day 下班前'],['fell through the cracks','被遗漏'],['ping','通知/联系']], shadow:"Hey, just wanted to gently nudge on this. Any updates you can share? I'm wrapping it up right now. Should have it by EOD." },
+  { theme:'接话技巧', phrase:"That's a really interesting point. It actually reminds me of something I read recently about...", phraseZh:'这个观点很有意思，让我想起最近读到的一个...', phraseUse:'不知道怎么接话时的万能句式，夸对方+引出自己的内容', dialogue:[{r:'A',t:"I think remote work has actually made teams more productive, not less."},{r:'B',t:"That's a really interesting point. It actually reminds me of something I read recently about how async communication reduces meeting overload."},{r:'A',t:"Oh, tell me more about that. I haven't seen that data."},{r:'B',t:"There was this McKinsey study showing companies that went async saved about 30% of meeting time."}], vocab:[['reminds me of','让我想起'],['async','异步（asynchronous缩写）'],['meeting overload','会议过载'],['tell me more','多说点'],['showing','表明/显示']], shadow:"That's a really interesting point. It actually reminds me of something I read recently about async communication." },
+  { theme:'会议插话', phrase:"Sorry to jump in, but I just wanted to add one quick thing before we move on.", phraseZh:'抱歉打断一下，在继续之前我想补充一点。', phraseUse:'会议插话的礼貌开头，"jump in" 比 "interrupt" 友善得多', dialogue:[{r:'A',t:"So to summarize, we'll push the launch to September and focus on QA this month. Any questions?"},{r:'B',t:"Sorry to jump in, but I just wanted to add one quick thing before we move on."},{r:'A',t:"Of course. What's on your mind?"},{r:'B',t:"The design team mentioned they need at least two more weeks for the UI audit. Should we factor that in?"}], vocab:[['jump in','插话（非正式打断）'],['move on','继续下一项'],["what's on your mind",'你在想什么'],['factor that in','把这个考虑进去'],['UI audit','界面审查']], shadow:"Sorry to jump in, but I just wanted to add one quick thing before we move on. Should we factor that in?" },
+  { theme:'表达失望', phrase:"I have to say, I'm a little disappointed with how things turned out, but I'm sure there's a good reason.", phraseZh:'老实说对结果有点失望，但我相信一定有合理的原因。', phraseUse:'既表达不满又留有余地的职场高情商说法', dialogue:[{r:'A',t:"I have to say, I'm a little disappointed with how the launch turned out, but I'm sure there's a good reason."},{r:'B',t:"You're right to feel that way. We ran into some last-minute server issues that forced us to scale back."},{r:'A',t:"I wish I'd known earlier. Let's set up a process so we're all in the loop next time."},{r:'B',t:"Absolutely. That's totally fair. I'll own that communication gap."}], vocab:[['turned out','最终结果是'],['scale back','缩减规模'],["in the loop",'知情/在信息圈内'],['own','承担/认领（责任）'],['communication gap','沟通断层']], shadow:"I have to say, I'm a little disappointed with how things turned out. I wish I'd known earlier. Let's set up a process so we're all in the loop next time." },
+  { theme:'打开话匣', phrase:"I couldn't help but notice your backpack. Are you into hiking too?", phraseZh:'我注意到你的背包，你也喜欢徒步吗？', phraseUse:'从观察对方物品自然开启话题，是small talk高手', dialogue:[{r:'A',t:"I couldn't help but notice your backpack. Are you into hiking too?"},{r:'B',t:"Oh yeah! Just came back from a trip to Yunnan actually. It was incredible."},{r:'A',t:"No way! I've been dying to go there. What trail did you do?"},{r:'B',t:"The Tiger Leaping Gorge. It's challenging but the views are absolutely worth every step."}], vocab:[["couldn't help but notice",'忍不住注意到'],['are you into',"你喜欢...吗"],['no way!','不会吧/真的吗！'],["i've been dying to",'我一直超想去'],['absolutely worth','绝对值得']], shadow:"I couldn't help but notice your backpack. Are you into hiking too? No way! I've been dying to go there." },
+  { theme:'讲故事', phrase:"So there I was, completely lost in a city where I didn't speak the language. And then the funniest thing happened...", phraseZh:'就在那时，我在一个语言不通的城市完全迷路了。然后最有趣的事发生了...', phraseUse:'讲故事的经典开头，制造悬念，吸引听众注意力', dialogue:[{r:'A',t:"So there I was, completely lost in Tokyo with no data and zero Japanese. And then the funniest thing happened."},{r:'B',t:"Oh no! What happened?"},{r:'A',t:"This elderly lady comes up to me, doesn't say a word, just takes my hand and walks me three blocks to my hotel."},{r:'B',t:"Wait, how did she even know where you were staying?"},{r:'A',t:"Exactly! Turns out she'd seen me leave that hotel earlier and recognized me. I still think about her kindness."}], vocab:[['so there i was','就在那时我...（故事开头）'],['zero','完全没有'],['elderly','年长的'],['turns out','原来/结果是'],['kindness','善意']], shadow:"So there I was, completely lost in a city where I didn't speak the language. Turns out she'd seen me leave earlier and recognized me." },
+  { theme:'给建议', phrase:"If I were you, I'd start small and build from there. No need to overhaul everything at once.", phraseZh:'如果我是你，我会从小处着手慢慢来。没必要一步到位。', phraseUse:'给建议的经典句型，显得有同理心不居高临下', dialogue:[{r:'A',t:"I want to completely change my diet and exercise routine, but I don't know where to start."},{r:'B',t:"If I were you, I'd start small and build from there. No need to overhaul everything at once."},{r:'A',t:"What would 'starting small' look like?"},{r:'B',t:"Maybe just swap one meal a day for something healthier. And walk 15 minutes. That's it. Then add more as it becomes a habit."}], vocab:[['if i were you','如果我是你'],['start small','从小处着手'],['overhaul','彻底改革'],['swap','替换'],['habit','习惯']], shadow:"If I were you, I'd start small and build from there. No need to overhaul everything at once. Then add more as it becomes a habit." },
+  { theme:'问隐私', phrase:"If you don't mind me asking, how did you end up in this field? That's quite an interesting career path.", phraseZh:'不介意的话问问，你是怎么进入这个领域的？职业路径挺有意思的。', phraseUse:'打听别人职业的礼貌铺垫，"if you don't mind me asking" 是万能缓冲', dialogue:[{r:'A',t:"If you don't mind me asking, how did you end up in risk analysis? That's quite an interesting career path."},{r:'B',t:"Honestly, it was kind of an accident. I studied statistics, and one day a friend referred me to a fintech startup."},{r:'A',t:"And you just fell into it?"},{r:'B',t:"Pretty much! I realized I loved the problem-solving aspect. Every day is different."}], vocab:[['end up','最终成为/走到'],['career path','职业路径'],['referred','推荐/介绍'],['fell into','偶然进入'],['problem-solving','解决问题的能力']], shadow:"If you don't mind me asking, how did you end up in this field? Honestly, it was kind of an accident, but I loved the problem-solving aspect." },
+  { theme:'拖延承认', phrase:"I have to come clean — I completely procrastinated on this and now I'm scrambling to finish.", phraseZh:'得坦白说——我完全拖延了，现在手忙脚乱赶工。', phraseUse:'承认拖延的诚实表达，比装没事强得多', dialogue:[{r:'A',t:"I have to come clean — I completely procrastinated on this report and now I'm scrambling to finish before the 5pm deadline."},{r:'B',t:"Been there! What's left to do?"},{r:'A',t:"The executive summary and formatting. I've got the data ready at least."},{r:'B',t:"Okay, focus on the summary. I can help with formatting if you send it over by 4:30."}], vocab:[['come clean','坦白'],['procrastinated','拖延了'],['scrambling','手忙脚乱'],['been there','我也经历过'],['executive summary','摘要']], shadow:"I have to come clean — I completely procrastinated on this and now I'm scrambling to finish. Been there! What's left to do?" },
+  { theme:'结束对话', phrase:"Well, I should probably let you go. It was really great catching up with you!", phraseZh:'那我就不打扰你了，今天真的很开心跟你聊！', phraseUse:'优雅结束对话的标准句，不说"我要走了"而是"我该让你走了"', dialogue:[{r:'B',t:"Well, I should probably let you go. It was really great catching up with you!"},{r:'A',t:"You too! Let's not wait another six months to do this again."},{r:'B',t:"Definitely not. I'll text you about that hiking trip."},{r:'A',t:"Please do! Take care and say hi to your family for me."}], vocab:[['let you go','让你走（委婉结束对话）'],['catching up','叙旧'],["let's not wait",'我们别等那么久'],['say hi to','替我向...问好'],['take care','保重']], shadow:"Well, I should probably let you go. It was really great catching up with you! Let's not wait another six months to do this again." }
+];
+
+function getDayIndex() {
+  const now = new Date();
+  const start = new Date(2026, 7, 1); // Aug 1, 2026 as curriculum start
+  const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+  return ((diff % ENG_CURRICULUM.length) + ENG_CURRICULUM.length) % ENG_CURRICULUM.length;
+}
+
+function getTodayEngContent() {
+  const idx = getDayIndex();
+  return ENG_CURRICULUM[idx];
+}
+
+function renderEngTasks() {
+  const d = getTodayEngContent();
+  const today = new Date();
+  const ds = today.toISOString().split('T')[0];
+  const checkedIn = store.engCheckins.includes(ds);
+  
+  document.getElementById('eng-task-date').textContent = (today.getMonth()+1) + '月' + today.getDate() + '日';
+  document.getElementById('eng-task-theme').textContent = d.theme;
+
+  const container = document.getElementById('eng-tasks-content');
+  let html = '';
+
+  // Task 1: Daily Phrase
+  html += '<div class="daily-phrase-card">';
+  html += '<div style="font-size:0.75rem;color:var(--text3);margin-bottom:6px;">📌 任务一 · 每日一句</div>';
+  html += '<div class="daily-phrase-en">' + d.phrase.replace(/'/g, '&#39;') + '</div>';
+  html += '<div class="daily-phrase-zh">' + d.phraseZh + '</div>';
+  html += '<div class="daily-phrase-use">💡 ' + d.phraseUse + '</div>';
+  html += '</div>';
+
+  // Task 2: Dialogue
+  html += '<div class="card" style="margin-bottom:16px;">';
+  html += '<div style="font-size:0.85rem;font-weight:600;margin-bottom:12px;"><span class="emoji">💬</span>任务二 · 情景对话</div>';
+  d.dialogue.forEach(line => {
+    html += '<div class="dialogue-line ' + line.r.toLowerCase() + '">';
+    html += '<div class="dialogue-speaker">' + (line.r === 'A' ? '🧑 Speaker A' : '👤 Speaker B') + '</div>';
+    html += line.t.replace(/'/g, '&#39;') + '</div>';
+  });
+  html += '<div style="font-size:0.75rem;color:var(--text3);margin-top:8px;">🎯 大声朗读对话，注意语调和连读。尝试不看文本复述一遍。</div>';
+  html += '</div>';
+
+  // Task 3: Vocab
+  html += '<div class="card" style="margin-bottom:16px;">';
+  html += '<div style="font-size:0.85rem;font-weight:600;margin-bottom:10px;"><span class="emoji">📖</span>任务三 · 今日词汇（' + d.vocab.length + '个）</div>';
+  html += '<div class="vocab-grid">';
+  d.vocab.forEach(v => {
+    html += '<div class="vocab-item"><div class="vocab-word">' + v[0] + '</div><div class="vocab-def">' + v[1] + '</div></div>';
+  });
+  html += '</div></div>';
+
+  container.innerHTML = html;
+
+  // Update check-in button state
+  const btn = document.getElementById('eng-checkin-btn');
+  if (checkedIn) {
+    btn.textContent = '✅ 今日已完成打卡';
+    btn.style.background = 'var(--green)';
+    btn.style.boxShadow = '0 4px 14px rgba(107,203,119,0.25)';
+    btn.disabled = true;
+  } else {
+    btn.textContent = '✅ 完成今日打卡';
+    btn.style.background = '';
+    btn.style.boxShadow = '';
+    btn.disabled = false;
+  }
+  
+  // Streak message
+  const streak = calcEngStreak();
+  document.getElementById('eng-streak-msg').textContent = streak > 0 ? '🔥 已连续打卡 ' + streak + ' 天，继续加油！' : '今天会是你的第1天吗？';
+}
+
+function renderEngShadowing() {
+  const d = getTodayEngContent();
+  const container = document.getElementById('eng-shadowing-content');
+  let html = '<div style="font-size:0.9rem;line-height:1.9;padding:8px 0;color:var(--text);background:var(--bg-card2);border-radius:8px;padding:16px;">';
+  html += '<div style="font-size:0.72rem;color:var(--text3);margin-bottom:6px;">📢 Shadowing 素材 · 跟读这段话：</div>';
+  html += d.shadow.replace(/'/g, '&#39;');
+  html += '</div>';
+  html += '<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">';
+  html += '<span class="tag tag-blue">连读练习</span><span class="tag tag-orange">语调模仿</span><span class="tag tag-green">中速朗读</span><span class="tag tag-purple">不看文本复述</span>';
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function doEnglishCheckin() {
+  const today = new Date().toISOString().split('T')[0];
+  if (store.engCheckins.includes(today)) { showToast('今天已经打卡过啦 ✅'); return; }
+  store.engCheckins.push(today);
+  store.engCheckins.sort();
+  saveStore();
+  renderEngTasks();
+  renderEngCheckin();
+  const streak = calcEngStreak();
+  showToast(streak > 1 ? '🔥 连续打卡 ' + streak + ' 天！' : '🎉 第一天打卡成功！');
+}
+
+function calcEngStreak() {
+  const checks = new Set(store.engCheckins);
+  let count = 0;
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  while (true) {
+    const s = d.toISOString().split('T')[0];
+    if (checks.has(s)) { count++; d.setDate(d.getDate() - 1); }
+    else break;
+  }
+  return count;
+}
+
+function renderEngCheckin() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const today = now.getDate();
+  const todayStr = now.toISOString().split('T')[0];
+  const checks = new Set(store.engCheckins);
+
+  document.getElementById('eng-cal-month').textContent = (month+1) + '月';
+  const streak = calcEngStreak();
+  document.getElementById('eng-cal-streak').textContent = '连续 ' + streak + ' 天';
+  document.getElementById('eng-streak-count').textContent = streak;
+
+  const monthChecks = store.engCheckins.filter(d => d.startsWith(now.toISOString().slice(0,7)));
+  document.getElementById('eng-month-count').textContent = monthChecks.length;
+
+  const grid = document.getElementById('eng-checkin-grid');
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const firstDay = new Date(year, month, 1).getDay();
+  const startDay = firstDay === 0 ? 6 : firstDay - 1;
+
+  let html = '';
+  for (let i = 0; i < startDay; i++) html += '<div class="checkin-day" style="background:transparent;border:none;"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    const cls = (checks.has(ds) ? ' done' : '') + (d === today ? ' today' : '');
+    html += '<div class="checkin-day' + cls + '" title="' + ds + '">' + d + (checks.has(ds) ? '<span class="check-emoji">✓</span>' : '') + '</div>';
+  }
+  grid.innerHTML = html;
+
+  // History list
+  const list = document.getElementById('eng-checkin-list');
+  const sorted = [...store.engCheckins].sort().reverse().slice(0, 30);
+  if (!sorted.length) {
+    list.innerHTML = '<div style="color:var(--text3);text-align:center;padding:20px;">开始你的英语口语打卡之旅吧 🚀</div>';
+    return;
+  }
+  list.innerHTML = sorted.map(ds => {
+    const d = store.engCheckins.indexOf(ds);
+    const dayIdx = ((new Date(ds) - new Date(2026,7,1)) / 86400000);
+    const idx = ((dayIdx % ENG_CURRICULUM.length) + ENG_CURRICULUM.length) % ENG_CURRICULUM.length;
+    const theme = ENG_CURRICULUM[idx] ? ENG_CURRICULUM[idx].theme : '英语学习';
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px;font-size:0.85rem;border-bottom:1px solid var(--border);">' +
+      '<span>📅 ' + ds + ' · <strong>' + theme + '</strong></span>' +
+      '<span class="tag tag-coral" style="font-size:0.65rem;">✓</span></div>';
+  }).join('');
+}
+
+function switchEnglishTab(name) {
+  document.querySelectorAll('#english-nav-cards .subnav-card').forEach(c => c.classList.remove('active'));
+  const activeCard = document.querySelector('#english-nav-cards .sc-' + name);
+  if (activeCard) activeCard.classList.add('active');
+  document.querySelectorAll('.eng-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('english-' + name);
+  if (panel) panel.classList.add('active');
+  if (name === 'tasks') renderEngTasks();
+  if (name === 'speaking') renderEngShadowing();
+  if (name === 'checkin') renderEngCheckin();
+}
+
+/* Add eng-panel class */
+const engStyle = document.createElement('style');
+engStyle.textContent = '.eng-panel{display:none;}.eng-panel.active{display:block;animation:fadeIn 0.3s ease;}';
+document.head.appendChild(engStyle);
+
 // ========== INIT ==========
 function init() {
-  document.getElementById('ex-date').value = '2026-07-27';
+  document.getElementById('ex-date').value = new Date().toISOString().split('T')[0];
   renderExerciseGrid();
   renderExerciseList();
   renderJournals();
   renderDoneItems();
   renderBooks();
   renderNotes();
+  renderEngTasks();
+  renderEngShadowing();
+  renderEngCheckin();
 }
 init();
+
 // ========== PWA: Register Service Worker ==========
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').then(() => {
