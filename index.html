@@ -389,6 +389,30 @@ body {
 .exercise-day.done { background: var(--green-light); color: var(--green); font-weight:600; border-color: var(--green); }
 .exercise-day.today { border: 2px solid var(--coral); box-shadow: 0 0 0 3px var(--coral-light); }
 
+/* LifeTracker — 心情/事件/睡眠/消费 四宫格热度图 */
+.lifetracker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 16px;
+}
+.lt-card {
+  background: var(--bg-card2);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  border: 1px solid var(--border);
+}
+.lt-title { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.lt-month { font-size: 0.65rem; color: var(--text3); margin-bottom: 8px; }
+.lt-heatmap { font-size: 0.75rem; line-height: 1.7; }
+.lt-row { display: flex; gap: 2px; }
+.lt-cell { width: calc(100% / 7); text-align: center; }
+.lt-scale { font-size: 0.6rem; color: var(--text3); margin-top: 6px; text-align: right; }
+
+@media (max-width: 600px) {
+  .lifetracker-grid { grid-template-columns: 1fr; }
+}
+
 /* News items - clickable */
 .news-item {
   padding: 12px 0;
@@ -577,8 +601,8 @@ body {
       <!-- Today's Focus -->
       <div class="card accent-left">
         <div class="card-header">
-          <div class="card-title"><span class="emoji">🎯</span>今日主线 · 8月1日</div>
-          <span class="tag tag-coral">重启计划 Day 16</span>
+          <div class="card-title"><span class="emoji">🎯</span>今日主线 · 8月2日</div>
+          <span class="tag tag-coral">重启计划 Day 17</span>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:12px;">
           <div style="flex:1;min-width:140px;">
@@ -723,7 +747,7 @@ body {
       <div class="eng-panel active" id="english-tasks">
         <div class="card">
           <div class="card-header">
-            <div class="card-title"><span class="emoji">📋</span>今日口语任务 · <span id="eng-task-date">8月1日</span></div>
+            <div class="card-title"><span class="emoji">📋</span>今日口语任务 · <span id="eng-task-date">8月2日</span></div>
             <span class="tag tag-coral" id="eng-task-theme">日常会话</span>
           </div>
           <div id="eng-tasks-content"></div>
@@ -754,25 +778,33 @@ body {
           <div class="resource-card">
             <div class="resource-icon" style="background:var(--coral-light);">🇬🇧</div>
             <div class="resource-info">
-              <div class="resource-name">BBC 6 Minute English</div>
-              <div class="resource-desc">每集6分钟，话题覆盖科技/气候/职场，结尾复盘核心词汇，A2-B2友好</div>
-              <div class="resource-link"><a href="https://www.bbc.co.uk/learningenglish/english/features/6-minute-english" target="_blank" style="color:var(--blue);">bbc.co.uk/learningenglish →</a></div>
+              <div class="resource-name">BBC Learning English Conversations</div>
+              <div class="resource-desc">BBC出品，Feifei老师主持，每集4分钟日常对话，难度温和适合通勤碎片时间</div>
+              <div class="resource-link"><a href="https://www.bbc.co.uk/learningenglish" target="_blank" style="color:var(--blue);">bbc.co.uk/learningenglish →</a></div>
             </div>
           </div>
           <div class="resource-card">
             <div class="resource-icon" style="background:var(--blue-light);">🇺🇸</div>
             <div class="resource-info">
               <div class="resource-name">All Ears English Podcast</div>
-              <div class="resource-desc">"Connection, not perfection"理念，美式idiom+跨文化沟通技巧</div>
+              <div class="resource-desc">Lindsay & Michelle主持，美式idiom+跨文化沟通技巧，"Connection, not perfection"理念，每集15-20分钟</div>
               <div class="resource-link"><a href="https://www.allearsenglish.com" target="_blank" style="color:var(--blue);">allearsenglish.com →</a></div>
             </div>
           </div>
           <div class="resource-card">
             <div class="resource-icon" style="background:var(--pink-light);">🇬🇧</div>
             <div class="resource-info">
-              <div class="resource-name">The English We Speak (BBC)</div>
-              <div class="resource-desc">每集3分钟专讲一个地道表达，碎片时间积累俚语</div>
-              <div class="resource-link"><a href="https://www.bbc.co.uk/learningenglish/english/features/the-english-we-speak" target="_blank" style="color:var(--blue);">bbc.co.uk/learningenglish →</a></div>
+              <div class="resource-name">Luke's English Podcast</div>
+              <div class="resource-desc">伦敦老师Luke Thompson主持，英式英语+文化幽默，平均时长111分钟，深度内容Apple 4.7分</div>
+              <div class="resource-link"><a href="https://teacherluke.co.uk" target="_blank" style="color:var(--blue);">teacherluke.co.uk →</a></div>
+            </div>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--purple-light);">🌍</div>
+            <div class="resource-info">
+              <div class="resource-name">Culips Everyday English Podcast</div>
+              <div class="resource-desc">自然对话形式练听力与口语，话题覆盖加拿大与全球文化，Apple 4.8分高口碑</div>
+              <div class="resource-link"><a href="https://www.culips.com" target="_blank" style="color:var(--blue);">culips.com →</a></div>
             </div>
           </div>
         </div>
@@ -790,9 +822,9 @@ body {
           <div class="resource-card">
             <div class="resource-icon" style="background:var(--teal-light);">🎤</div>
             <div class="resource-info">
-              <div class="resource-name">TED Talks Daily</div>
-              <div class="resource-desc">各领域精彩演讲，适合中高级学习者拓展视野</div>
-              <div class="resource-link"><a href="https://www.ted.com/talks" target="_blank" style="color:var(--blue);">ted.com/talks →</a></div>
+              <div class="resource-name">mmmEnglish (Emma)</div>
+              <div class="resource-desc">语法可视化教学 + Shadowing跟读练习，中级学习者宝藏频道</div>
+              <div class="resource-link"><a href="https://www.youtube.com/@mmmEnglish_emma" target="_blank" style="color:var(--blue);">youtube.com/@mmmEnglish_emma →</a></div>
             </div>
           </div>
         </div>
@@ -855,50 +887,50 @@ body {
         <div class="card">
         <div class="card-header">
           <div class="card-title"><span class="emoji">🇨🇳</span>A股市场 · 今日热点</div>
-          <span class="tag tag-coral">8月1日</span>
+          <span class="tag tag-coral">8月2日</span>
         </div>
-        <a class="news-item" href="https://www.ifnews.com/news.html?aid=856217&cid=49" target="_blank">
-          <div class="news-title"><strong>A股放量冲高回落，科创50盘中涨超8%</strong> — 上证指数涨0.72%报3832点，深成指涨2.2%，创业板指涨3.06%；全市场近4700只个股上涨，成交2.56万亿元 <span class="news-link-icon">🔗</span></div>
-          <div class="news-source">国际金融报</div>
+        <a class="news-item" href="https://www.toutiao.com/article/7669042915464725015/" target="_blank">
+          <div class="news-title"><strong>科创50盘中暴涨近6%，A股放量普涨迎反转</strong> — 7月收官战全市场4700只个股翻红，成交额飙至2.56万亿元，较前一日放量2014亿；创业板收涨3.06%，科创50涨2.99% <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">今日头条 · 地球局势</div>
         </a>
-        <a class="news-item" href="https://cj.sina.com.cn/articles/view/1650111241/625ab30902001h2jy?finpagefr=p_104_js" target="_blank">
-          <div class="news-title"><strong>科技创新与资本市场改革协同推进</strong> — 政治局会议强调前沿技术突破和未来产业发展，AI产业化与市场长效韧性建设成为下半年两大核心主线 <span class="news-link-icon">🔗</span></div>
-          <div class="news-source">新浪财经 · 证券时报</div>
-        </a>
-        <a class="news-item" href="https://q.stock.sohu.com/cn/news.html?code=cn_688322&date=2026%2F0801&tab=200&textId=1041331051&type=120" target="_blank">
-          <div class="news-title"><strong>AI算力/半导体/存储芯片板块强势领涨</strong> — 智谱AI、算力租赁、元件板块涨幅居前；MLCC跃升AI服务器第三大成本项，利和兴股价涨停 <span class="news-link-icon">🔗</span></div>
+        <a class="news-item" href="https://q.stock.sohu.com/cn/news.html?code=cn_600667&date=2026%2F0802&tab=200&textId=1041616611&type=120" target="_blank">
+          <div class="news-title"><strong>AI算力需求加速，亚马逊资本支出上调至2200亿美元</strong> — 微软Q4新增数据中心租约承诺超1300亿美元创历史新高；"十五五"算力网络新增4万亿元直接投资，芯片概念主力净流入489.8亿 <span class="news-link-icon">🔗</span></div>
           <div class="news-source">搜狐财经</div>
         </a>
-        <a class="news-item" href="https://www.163.com/dy/article/L36RMGOC0553Y7J3.html" target="_blank">
-          <div class="news-title"><strong>北向资金单日净买入195.8亿元</strong> — 创沪深港通开通以来第七大单日净买入额；半日主力资金净流入电子板块超311亿元，芯片概念净流入489.8亿 <span class="news-link-icon">🔗</span></div>
-          <div class="news-source">网易财经</div>
+        <a class="news-item" href="https://www.sohu.com/a/1057692109_122536483" target="_blank">
+          <div class="news-title"><strong>半导体/CPO/存储芯片高开低走，AI应用端接力大涨</strong> — 传智教育5连板、普联软件连续2日20%涨停、蓝色光标等多股20cm涨停；硬件股108股炸板，封板率仅48% <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">搜狐财经</div>
         </a>
-        <a class="news-item" href="https://news.10jqka.com.cn/20260801/c678599174.shtml" target="_blank">
-          <div class="news-title"><strong>银行板块走弱，高股息资金转向科技成长</strong> — 农业银行跌超4%，银行、保险、白酒等防御性板块回调；资金从高股息品种涌入科技成长板块 <span class="news-link-icon">🔗</span></div>
-          <div class="news-source">同花顺财经</div>
+        <a class="news-item" href="https://www.sohu.com/a/1057732005_99992453" target="_blank">
+          <div class="news-title"><strong>7月股票ETF净流入4778亿元，创单月历史新高</strong> — 券商8月金股曝光，电子行业股票数量居首；长鑫科技LPDDR6研发验证接近尾声，距离量产再进一步 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">搜狐财经 · 陆家嘴财经早餐</div>
+        </a>
+        <a class="news-item" href="http://scitech.ce.cn/sy/zx/202608/t20260802_3122429.shtml" target="_blank">
+          <div class="news-title"><strong>人工智能法立法进程提速，AI应用板块60余股涨超10%</strong> — 国家发改委表示将加快人工智能法立法进程；中文在线、昆仑万维等9家A股上市公司股价实现"20cm"涨停 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">经济日报 · 证券日报</div>
         </a>
       </div>
 
       <div class="card">
         <div class="card-header">
           <div class="card-title"><span class="emoji">🇺🇸</span>美股市场 · 今日热点</div>
-          <span class="tag tag-blue">8月1日</span>
+          <span class="tag tag-blue">8月2日</span>
         </div>
-        <a class="news-item" href="https://www.163.com/dy/article/L37QBRKN05198CJN.html" target="_blank">
-          <div class="news-title"><strong>美股三大指数V型反转收涨，亚马逊暴涨15%</strong> — 道指涨0.53%，标普500涨0.7%，纳指涨1%；亚马逊绩后大涨15.32%，单日市值增加3890亿美元 <span class="news-link-icon">🔗</span></div>
-          <div class="news-source">财联社 · 网易</div>
+        <a class="news-item" href="https://www.yicai.com/news/102990391.html" target="_blank">
+          <div class="news-title"><strong>黄仁勋CES讲话点燃芯片股，道指逼近5万点</strong> — 标普500涨0.62%报6944点，纳指涨0.65%报23547点，道指涨0.99%报49462点，刷新历史收盘新高 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">第一财经</div>
         </a>
-        <a class="news-item" href="https://so.html5.qq.com/page/real/search_news?docid=70000021_2436a6d310757752" target="_blank">
-          <div class="news-title"><strong>苹果大跌7.35%，市值蒸发近3580亿美元</strong> — 第三财季营收超预期、iPhone销售大增22%，但服务收入不及预期；全球股王宝座还给英伟达 <span class="news-link-icon">🔗</span></div>
-          <div class="news-source">中新经纬 · 腾讯新闻</div>
+        <a class="news-item" href="https://www.yicai.com/news/102990391.html" target="_blank">
+          <div class="news-title"><strong>存储芯片股集体爆发，闪迪大涨27%</strong> — 西部数据涨17%、希捷科技攀升14%、美光科技涨10%，均触及历史新高；费城半导体指数收涨2.75%再创新高 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">第一财经</div>
         </a>
-        <a class="news-item" href="https://finance.sina.cn/usstock/mggd/2026-08-01/detail-iniktyyn9096513.d.html" target="_blank">
-          <div class="news-title"><strong>云计算三巨头本周市值增加近1.5万亿美元</strong> — 微软、亚马逊、谷歌携手拉升撑起美股；微软本周市值增加6165亿美元，亚马逊增加4256亿 <span class="news-link-icon">🔗</span></div>
-          <div class="news-source">新浪财经 · 环球市场播报</div>
+        <a class="news-item" href="https://www.yicai.com/news/102990391.html" target="_blank">
+          <div class="news-title"><strong>莫德纳领涨医疗板块，美国银行上调目标价</strong> — 莫德娜跳涨近11%，标普500医疗保健指数上涨1.96%；英伟达披露新一代AI处理器细节，强调新存储技术 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">第一财经</div>
         </a>
-        <a class="news-item" href="https://www.163.com/dy/article/L37S8FNI0519DDQ2.html" target="_blank">
-          <div class="news-title"><strong>纳斯达克中国金龙指数五连阳</strong> — 本周累计上涨8.09%，本月涨超12%；阿里巴巴涨5.1%，百度涨3.38%，京东涨2.17% <span class="news-link-icon">🔗</span></div>
-          <div class="news-source">第一财经 · 网易</div>
+        <a class="news-item" href="https://www.yicai.com/news/102990391.html" target="_blank">
+          <div class="news-title"><strong>中概股整体承压，阿里巴巴跌3.43%</strong> — 纳斯达克中国金龙指数收跌0.78%；中驰车福暴涨70.83%，拼多多逆势涨2.97%，百度跌2.18%，京东跌0.17% <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">第一财经</div>
         </a>
       </div>
       </div>
@@ -908,74 +940,74 @@ body {
         <div class="card">
           <div class="card-header">
             <div class="card-title"><span class="emoji">🔥</span>今日新闻热点</div>
-            <span class="tag tag-orange">8月1日</span>
+            <span class="tag tag-orange">8月2日</span>
           </div>
-          <a class="news-item" href="https://www.toutiao.com/article/7668826915989422628" target="_blank">
-            <div class="news-title"><strong>🎖️ 八一建军节，习近平签署通令给1名个人记功</strong> — 中央军委主席习近平给中国人民解放军91548部队杨勇记国防科技一等功 <span class="news-link-icon">🔗</span></div>
-            <div class="news-source">央视新闻 · 今日头条</div>
+          <a class="news-item" href="https://ysxw.cctv.cn/article.html?toc_style_id=feeds_default&item_id=8114615862356200522&channelId=1119" target="_blank">
+            <div class="news-title"><strong>🇨🇳 南部战区、中国海警位黄岩岛附近组织演练</strong> — 8月1日解放军南部战区位黄岩岛领海、领空和周边海空域组织海空联合演训，重点演练侦察预警、威慑巡航等实战化科目 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">央视新闻</div>
           </a>
-          <a class="news-item" href="https://www.toutiao.com/article/7668826915989422628" target="_blank">
-            <div class="news-title"><strong>🛡️ 我国将开展为期一年的深化扫黑除恶专项斗争</strong> — 中央政法委消息，按照党中央、国务院部署扎实推进 <span class="news-link-icon">🔗</span></div>
-            <div class="news-source">央视新闻 · 今日头条</div>
+          <a class="news-item" href="https://ysxw.cctv.cn/article.html?toc_style_id=feeds_default&item_id=8114615862356200522&channelId=1119" target="_blank">
+            <div class="news-title"><strong>📜 《黄岩岛国家级自然保护区管理办法》印发</strong> — 我国将在黄岩岛国家级自然保护区建立日常巡护制度，依法及时查处各类违法行为 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">央视新闻</div>
           </a>
-          <a class="news-item" href="https://www.zj.chinanews.com/jzkzj/2026-08-01/detail-ihfhupmv6607771.shtml" target="_blank">
-            <div class="news-title"><strong>💊 新一批国家药品集采纳入65个品种</strong> — 第十二批国家组织药品集采开标，327家企业的521个产品获得拟中选资格，为规模最大一批 <span class="news-link-icon">🔗</span></div>
+          <a class="news-item" href="https://www.zj.chinanews.com/jzkzj/2026-08-02/detail-ihfhupmv6608132.shtml" target="_blank">
+            <div class="news-title"><strong>🌡️ 150年来最强厄尔尼诺事件正在形成</strong> — 中国气象局消息，本次厄尔尼诺事件预计至少持续到明年春季，长度10至11个月，需防范极端天气影响 <span class="news-link-icon">🔗</span></div>
             <div class="news-source">中国新闻网</div>
           </a>
-          <a class="news-item" href="https://www.toutiao.com/article/7668826915989422628" target="_blank">
-            <div class="news-title"><strong>🛂 国务院公布出境入境管理规定，9月15日起施行</strong> — 规范出境入境管理，保障人员合法权益，维护国家主权、安全、发展利益 <span class="news-link-icon">🔗</span></div>
-            <div class="news-source">央视新闻 · 今日头条</div>
-          </a>
-          <a class="news-item" href="https://www.zj.chinanews.com/jzkzj/2026-08-01/detail-ihfhupmv6607771.shtml" target="_blank">
-            <div class="news-title"><strong>🇯🇵 日本政府设立"国家情报局"，外交部敦促汲取历史教训</strong> — 外交部发言人表示日方以所谓"国家安全"为借口加速"再军事化"进程，应慎重行事 <span class="news-link-icon">🔗</span></div>
+          <a class="news-item" href="https://www.zj.chinanews.com/jzkzj/2026-08-02/detail-ihfhupmv6608132.shtml" target="_blank">
+            <div class="news-title"><strong>🎬 2026暑期档电影票房破70亿元</strong> — 8月首日票房连续22天破亿，单日票房持续火爆；国产影片暑期档表现亮眼 <span class="news-link-icon">🔗</span></div>
             <div class="news-source">中国新闻网</div>
           </a>
-          <a class="news-item" href="https://www.toutiao.com/article/7668826915989422628" target="_blank">
-            <div class="news-title"><strong>🇵🇭 菲律宾在黄岩岛划设所谓"领海基线"，中方坚决反对</strong> — 外交部声明称非法无效，严重侵犯中国领土主权和海洋权益 <span class="news-link-icon">🔗</span></div>
-            <div class="news-source">央视新闻 · 今日头条</div>
+          <a class="news-item" href="https://ysxw.cctv.cn/article.html?toc_style_id=feeds_default&item_id=8114615862356200522&channelId=1119" target="_blank">
+            <div class="news-title"><strong>☢️ 海南自贸港首个"华龙一号"核电机组成功并网</strong> — 华能昌江核电二期项目3号机组并网发电，年发电量180亿千瓦时，每年减排二氧化碳约1160万吨 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">央视新闻</div>
           </a>
-          <a class="news-item" href="https://www.toutiao.com/article/7668826915989422628" target="_blank">
-            <div class="news-title"><strong>🛰️ 北斗卫星导航系统全面完成在轨升级</strong> — 中国卫星导航系统管理办公室7月31日发布消息，系统性能进一步提升 <span class="news-link-icon">🔗</span></div>
-            <div class="news-source">央视新闻 · 今日头条</div>
+          <a class="news-item" href="https://new.qq.com/rain/a/20260802A03U5C00?refer=cp_1009" target="_blank">
+            <div class="news-title"><strong>🇺🇸 美海军陆战队F-35战机加州圣迭戈基地坠毁</strong> — 当地时间7月31日，飞行员弹射逃生后获救；美军称此次坠机为"意外事故" <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">腾讯新闻 · 央视新闻</div>
           </a>
-          <a class="news-item" href="https://m.thepaper.cn/newsDetail_forward_33692442" target="_blank">
-            <div class="news-title"><strong>🏦 四部门联合发文健全金融机构治理，提出22条措施</strong> — 金融监管总局、央行、证监会、财政部联合发布实施意见，到2029年基本形成规范高效的治理机制 <span class="news-link-icon">🔗</span></div>
-            <div class="news-source">经济日报 · 澎湃新闻</div>
+          <a class="news-item" href="https://new.qq.com/rain/a/20260802A03U5C00?refer=cp_1009" target="_blank">
+            <div class="news-title"><strong>🇪🇸 西班牙休达大规模非法移民涌入，至少67人溺亡</strong> — 截至8月1日，数千移民从摩洛哥涌入西班牙北非飞地休达，大部分非法移民已返回摩洛哥 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">腾讯新闻 · 央视新闻</div>
           </a>
-          <a class="news-item" href="https://k.sina.com.cn/article_3314280193_c58be70102001ix4y.html?kdurlshow=1" target="_blank">
-            <div class="news-title"><strong>⛽ 国内油价上调，加满一箱92号汽油多花27元</strong> — 7月31日24时起，汽、柴油零售限价每吨分别上调685元、655元 <span class="news-link-icon">🔗</span></div>
-            <div class="news-source">新浪财经</div>
+          <a class="news-item" href="https://new.qq.com/rain/a/20260802A03CAJ00?refer=cp_1009" target="_blank">
+            <div class="news-title"><strong>🇮🇷 美伊瑞士谈判，霍尔木兹海峡局势升级</strong> — 8月2日美伊将在瑞士开启谈判；美财长贝森特称正全球追查伊朗资产；美国驻中东10国使馆发布安全警报 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">腾讯新闻 · 国际早报</div>
           </a>
-          <a class="news-item" href="https://www.ifnews.com/news.html?aid=856217&cid=49" target="_blank">
-            <div class="news-title"><strong>🌍 伊朗称霍尔木兹海峡已无法正常通行，美军否认</strong> — 地缘政治紧张推升国际油价，WTI原油涨至84美元/桶附近，摩根大通警告或超120美元 <span class="news-link-icon">🔗</span></div>
-            <div class="news-source">国际金融报</div>
+          <a class="news-item" href="https://ysxw.cctv.cn/article.html?toc_style_id=feeds_default&item_id=8114615862356200522&channelId=1119" target="_blank">
+            <div class="news-title"><strong>🎖️ 《退役军人就业创业促进条例》8月1日起施行</strong> — 各地设置一定数量基层公务员职位面向高校毕业生退役军人招考；创业给予税收、融资、信贷等扶持政策 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">央视新闻</div>
+          </a>
+          <a class="news-item" href="https://www.zj.chinanews.com/jzkzj/2026-08-02/detail-ihfhupmv6608132.shtml" target="_blank">
+            <div class="news-title"><strong>🏛️ 十五五公共机构节能降碳工作方案印发</strong> — 国家机关事务管理局、国家发改委联合部署"十五五"时期公共机构节能降碳工作；中国与乌兹别克斯坦AEO互认安排正式实施 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">中国新闻网</div>
           </a>
         </div>
 
         <div class="card">
           <div class="card-header">
             <div class="card-title"><span class="emoji">🌍</span>国际英语新闻 · English News</div>
-            <span class="tag tag-blue">August 1</span>
+            <span class="tag tag-blue">August 2</span>
           </div>
-          <a class="news-item" href="https://www.bbc.com/news/live/clyp18kwdnwt" target="_blank">
-            <div class="news-title"><strong>Hamas agrees to Trump's plan to disarm in Gaza</strong> — 哈马斯高级官员称同意按特朗普方案在加沙解除武装，以色列方面尚未回应；若落实或成为结束加沙战争的首个可信步骤 <span class="news-link-icon">🔗</span></div>
+          <a class="news-item" href="https://new.qq.com/rain/a/20260802A038HQ00?refer=cp_1009" target="_blank">
+            <div class="news-title"><strong>US-Iran to hold talks in Switzerland as Hormuz tensions escalate</strong> — 美伊8月2日将在瑞士开启谈判；德黑兰称已关闭霍尔木兹海峡，美方否认；紧张局势牵动全球能源与航运预期 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">BBC News · 中东</div>
+          </a>
+          <a class="news-item" href="https://www.bbc.com/news/articles/c5yvrn9v4lzo" target="_blank">
+            <div class="news-title"><strong>Israeli strike on Gaza kills six, including Al Jazeera cameraman</strong> — 以军袭击加沙造成六人死亡，包括半岛电视台摄像师Ahmed Wishah；以军称其为"哈马斯狙击行动人员"，未提供证据 <span class="news-link-icon">🔗</span></div>
             <div class="news-source">BBC News · Middle East</div>
           </a>
-          <a class="news-item" href="https://www.bbc.com/news/articles/cg4drwzkrkxo" target="_blank">
-            <div class="news-title"><strong>Spain sends troops as thousands enter Ceuta from Morocco</strong> — 数千移民从摩洛哥涌入西班牙北非飞地休达，边境陷入混乱，至少15人在试图游往该领地时溺亡 <span class="news-link-icon">🔗</span></div>
-            <div class="news-source">BBC News · World</div>
-          </a>
-          <a class="news-item" href="https://www.bbc.com/news/articles/c4gdzlzprv1o" target="_blank">
-            <div class="news-title"><strong>South Korean shares surge after chip stock rout</strong> — 经历暴跌后韩国芯片股大幅反弹，带动韩国综合指数盘初涨超13%，SK海力士一度涨逾27% <span class="news-link-icon">🔗</span></div>
-            <div class="news-source">BBC News · Business</div>
-          </a>
-          <a class="news-item" href="https://www.bbc.com/news/articles/cp87m46g392o" target="_blank">
-            <div class="news-title"><strong>Three things we learned about AI from Big Tech earnings</strong> — 微软、亚马逊、Meta等科技巨头财报释放AI三大信号：资本开支高企、云业务加速、商业化仍待验证 <span class="news-link-icon">🔗</span></div>
+          <a class="news-item" href="https://new.qq.com/rain/a/20260802A038HQ00?refer=cp_1009" target="_blank">
+            <div class="news-title"><strong>AI companies offer free apartment cleaning in NYC for data</strong> — 一家AI公司在纽约免费提供公寓清洁服务，主要目的是收集数据，训练未来可烹饪、清洁甚至修车的机器人 <span class="news-link-icon">🔗</span></div>
             <div class="news-source">BBC News · Technology</div>
           </a>
-          <a class="news-item" href="https://www.bbc.com/news/articles/cddjz1r01l8o" target="_blank">
-            <div class="news-title"><strong>Nirmal Purja among 10 climbers missing after Pakistan avalanche</strong> — 世界著名登山家Nirmal Purja在巴基斯坦Broad Peak雪崩后失联，当地已展开搜救 <span class="news-link-icon">🔗</span></div>
-            <div class="news-source">BBC News · Asia</div>
+          <a class="news-item" href="https://www.bbc.com/news/articles/cwy4y6d04g5o" target="_blank">
+            <div class="news-title"><strong>Poland to temporarily suspend right to asylum, PM Tusk says</strong> — 波兰总理图斯克称俄罗斯和白俄罗斯正以移民问题扰乱欧盟稳定，波兰将临时暂停庇护申请权 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">BBC News · Europe</div>
+          </a>
+          <a class="news-item" href="https://new.qq.com/rain/a/20260802A038HQ00?refer=cp_1009" target="_blank">
+            <div class="news-title"><strong>Mystery of Russia's secret weapon downed in Ukraine</strong> — 乌克兰人目睹俄罗斯一架隐形战斗无人机被本方战机击落，引发外界对俄军新武器性能的热议 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">BBC News · Europe</div>
           </a>
         </div>
       </div>
@@ -1060,40 +1092,24 @@ body {
         <div class="card">
           <div class="card-header">
             <div class="card-title"><span class="emoji">✅</span>今日完成事项</div>
-            <button class="btn btn-primary btn-sm" onclick="addDone()">+ 记录完成</button>
           </div>
           <div id="done-list">
             <div style="color:var(--text3);text-align:center;padding:20px;">今天完成了什么？不需要排得很满，记录真实的进步就好 🌿</div>
           </div>
         </div>
-        <div id="done-form" style="display:none;">
-          <div class="card">
-            <div class="card-title" style="margin-bottom:12px;">记录今天完成的事</div>
-            <input class="input" id="done-input" placeholder="今天完成了什么？（一句话即可）" style="margin-bottom:8px;">
-            <select class="select" id="done-category" style="margin-bottom:12px;">
-              <option value="career">💼 职业/Career</option>
-              <option value="finance">💹 理财/Finance</option>
-              <option value="life">🌿 生活/Life</option>
-              <option value="other">📌 其他</option>
-            </select>
-            <div style="display:flex;gap:8px;">
-              <button class="btn btn-primary btn-sm" onclick="saveDone()">保存</button>
-              <button class="btn btn-outline btn-sm" onclick="cancelDone()">取消</button>
-            </div>
-          </div>
-        </div>
+        <!-- Done 记录已移至 Obsidian，此处只展示统计 -->
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-value" id="stat-career-count">2</div>
-            <div class="stat-label">Career Deliverables</div>
+            <div class="stat-value" id="stat-diary-count">1</div>
+            <div class="stat-label">本月日记天数</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="stat-market-count">0</div>
-            <div class="stat-label">Market 记录</div>
+            <div class="stat-value" id="stat-mood-count">-</div>
+            <div class="stat-label">本月心情</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="stat-recovery-count">1</div>
-            <div class="stat-label">运动/恢复</div>
+            <div class="stat-value" id="stat-exercise-count">0</div>
+            <div class="stat-label">本月运动天数</div>
           </div>
         </div>
       </div>
@@ -1102,7 +1118,7 @@ body {
       <div class="planning-panel" id="planning-exercise">
         <div class="card">
           <div class="card-header">
-            <div class="card-title"><span class="emoji">🏃</span>7月运动打卡</div>
+            <div class="card-title"><span class="emoji">🏃</span>8月运动打卡</div>
             <span class="tag tag-green">目标: 12次</span>
           </div>
           <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
@@ -1121,21 +1137,10 @@ body {
           <div class="exercise-grid" id="exercise-grid"></div>
         </div>
 
+        <!-- 运动记录来自 Obsidian 八月每日日志 -->
         <div class="card">
-          <div class="card-header">
-            <div class="card-title"><span class="emoji">➕</span>记录运动</div>
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <input class="input" id="ex-type" placeholder="运动项目（如骑车、游泳）" style="flex:1;min-width:120px;">
-            <input class="input" id="ex-duration" placeholder="时长（分钟）" type="number" style="width:100px;">
-            <input class="input" id="ex-date" type="date" style="width:140px;">
-            <button class="btn btn-primary btn-sm" onclick="addExercise()" style="height:40px;">记录</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title" style="margin-bottom:12px;"><span class="emoji">📊</span>运动记录列表</div>
-          <div id="exercise-list"><div style="color:var(--text3);padding:8px;font-size:0.85rem;">7/15 · 🚲 骑车 30分钟</div></div>
+          <div class="card-title" style="margin-bottom:12px;"><span class="emoji">💪</span>运动记录（同步自 Obsidian）</div>
+          <div id="exercise-list"><div style="color:var(--text3);padding:8px;font-size:0.85rem;">等待 Obsidian 同步…</div></div>
         </div>
       </div>
 
@@ -1143,27 +1148,13 @@ body {
       <div class="planning-panel" id="planning-journal">
         <div class="card">
           <div class="card-header">
-          <div class="card-title"><span class="emoji">📓</span>今日日志 · 8月1日</div>
-          <span class="tag tag-pink">Day 31</span>
+          <div class="card-title"><span class="emoji">📓</span>今日日志 · 8月2日</div>
+          <span class="tag tag-pink">Day 32</span>
           </div>
-          <div style="margin-bottom:8px;font-size:0.85rem;color:var(--text2);">今天的心情：</div>
-          <div class="mood-grid" style="margin-bottom:16px;">
-            <button class="mood-btn" onclick="selectMood(this,'😄')">😄</button>
-            <button class="mood-btn" onclick="selectMood(this,'😊')">😊</button>
-            <button class="mood-btn" onclick="selectMood(this,'😐')">😐</button>
-            <button class="mood-btn" onclick="selectMood(this,'😔')">😔</button>
-            <button class="mood-btn" onclick="selectMood(this,'😭')">😭</button>
-            <button class="mood-btn" onclick="selectMood(this,'🥹')">🥹</button>
-            <button class="mood-btn" onclick="selectMood(this,'😤')">😤</button>
-          </div>
-          <div style="margin-bottom:8px;font-size:0.85rem;color:var(--text2);">今天值得记住的一件事：</div>
-          <textarea class="textarea" id="journal-event" placeholder="不是每一天都需要有意义，但每一天都可能有一点值得被记住..." style="margin-bottom:8px;"></textarea>
-          <div style="margin-bottom:8px;font-size:0.85rem;color:var(--text2);">为什么想留住它：</div>
-          <textarea class="textarea" id="journal-why" placeholder="当时的感受..." style="margin-bottom:12px;"></textarea>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <button class="btn btn-primary" onclick="saveJournal()">💾 保存日志</button>
-            <span style="font-size:0.75rem;color:var(--text3);">今天不写也没关系，先保留现场 ✨</span>
-          </div>
+          <!-- LifeTracker 全月热度图（来自 Obsidian 每日日志同步） -->
+          <div class="lifetracker-grid" id="lifetracker-grid"></div>
+          <!-- 今日叙事（来自 Obsidian） -->
+          <div id="journal-today" style="margin-top:16px;"></div>
         </div>
         <div class="card">
           <div class="card-header">
@@ -1198,15 +1189,18 @@ body {
 
 <!-- OBSIDIAN_PLACEHOLDER -->
 <script>
+// Obsidian 全月 LifeTracker（心情/事件/睡眠/消费/运动）— sync_daily_journal.py 自动注入
+const OBSIDIAN_LIFE_DATA = {"mood": ["😄", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️"], "events": ["💻", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️"], "sleep": ["🌞", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️"], "spending": ["🈚️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️"], "movement": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]};
+
 // 从 Obsidian 同步的打卡日期（Python 脚本自动注入）
 const OBSIDIAN_CHECKINS = ["2026-08-01"];</script>
 <script>
 // 从 Obsidian 同步的今日日志（Python 脚本自动注入）
-const OBSIDIAN_JOURNAL_DATA = {"date": "2026-08-01", "mood": "😄", "event": "📍 在小石上班地方学习，练了英语新闻复述，完善了工作台", "why": "", "trackers": {"事件": "💻", "睡眠": "🌞", "消费": "🈚️", "开心": "◻️", "阅读": "◻️", "创作": "◻️", "运动": "◻️"}, "tags": "#仅留日记 #学习模式候选", "discover": ""};</script>
+const OBSIDIAN_JOURNAL_DATA = {"date": "2026-08-01", "mood": "😄", "event": "📍 在小石上班地方学习，练了英语新闻复述，完善了工作台", "why": "", "tags": "#仅留日记 #学习模式候选", "discover": ""};</script>
 <script>
 // ========== DATA STORE ==========
 const STORE_KEY = 'lemonhui_workbench_v2';
-const STORE_VERSION = 3; // bump when store schema changes
+const STORE_VERSION = 4; // bump when store schema changes
 
 let store = JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || null;
 // 版本不匹配或首次初始化 → 用最新默认值
@@ -1279,7 +1273,7 @@ function switchSection(name) {
   if (bnavBtn) bnavBtn.classList.add('active');
   // 切换到对应板块时刷新渲染
   if (name === 'growth') { renderBooks(); renderNotes(); }
-  if (name === 'planning') { renderDoneItems(); renderExerciseGrid(); renderJournals(); }
+  if (name === 'planning') { renderDoneItems(); renderExerciseGrid(); renderExerciseList(); renderLifeTracker(); renderJournalToday(); renderJournals(); }
   if (name === 'english') { switchEnglishTab('tasks'); }
 }
 
@@ -1309,7 +1303,7 @@ function switchPlanningTab(name) {
   if (panel) panel.classList.add('active');
   // 渲染
   if (name === 'exercise') { renderExerciseGrid(); renderExerciseList(); }
-  if (name === 'journal') renderJournals();
+  if (name === 'journal') { renderLifeTracker(); renderJournalToday(); renderJournals(); }
   if (name === 'done') renderDoneItems();
 }
 
@@ -1464,67 +1458,105 @@ function renderDoneItems() {
 }
 
 // ========== EXERCISE ==========
-function addExercise() {
-  const type = document.getElementById('ex-type').value.trim();
-  const dur = parseInt(document.getElementById('ex-duration').value);
-  const date = document.getElementById('ex-date').value || new Date().toISOString().split('T')[0];
-  if (!type || !dur) return;
-  store.exercises.push({ type, duration: dur, date });
-  saveStore(); renderExerciseGrid(); renderExerciseList();
-  document.getElementById('ex-type').value = '';
-  document.getElementById('ex-duration').value = '';
-  showToast('运动已记录 💪');
-}
-function deleteExercise(idx) { store.exercises.splice(idx, 1); saveStore(); renderExerciseGrid(); renderExerciseList(); }
+// 数据来源：OBSIDIAN_LIFE_DATA.movement（Obsidian 八月每日日志 → 运动 tracker）
 function renderExerciseGrid() {
   const grid = document.getElementById('exercise-grid');
-  const firstDay = new Date(2026, 6, 1).getDay();
-  const startDay = firstDay === 0 ? 6 : firstDay - 1;
-  const exerciseDates = new Set(store.exercises.map(e => e.date));
+  if (!grid) return;
+  const firstDay = new Date(2026, 7, 1).getDay(); // Aug 2026: 6=Saturday
+  const startDay = firstDay === 0 ? 6 : firstDay - 1; // Mon-start offset
+  const movement = (OBSIDIAN_LIFE_DATA && OBSIDIAN_LIFE_DATA.movement) || [];
+  const today = new Date().getDate();
+  const now = new Date();
+  const isAugust = now.getFullYear() === 2026 && now.getMonth() === 7;
   let html = '';
   for (let i = 0; i < startDay; i++) html += '<div class="exercise-day" style="background:transparent;border:none;"></div>';
   for (let d = 1; d <= 31; d++) {
-    const ds = '2026-07-' + String(d).padStart(2, '0');
-    const cls = (exerciseDates.has(ds) ? ' done' : '') + (d === 27 ? ' today' : '');
-    html += '<div class="exercise-day' + cls + '" title="' + ds + '">' + d + '</div>';
+    const done = movement[d-1] === true;
+    const isToday = isAugust && d === today;
+    const cls = (done ? ' done' : '') + (isToday ? ' today' : '');
+    html += '<div class="exercise-day' + cls + '" title="8月' + d + '日' + (done ? ' ✅' : '') + '">' + d + '</div>';
   }
   grid.innerHTML = html;
 }
 function renderExerciseList() {
   const c = document.getElementById('exercise-list');
-  const sorted = [...store.exercises].sort((a,b) => b.date.localeCompare(a.date));
-  if (!sorted.length) { c.innerHTML = '<div style="color:var(--text3);padding:8px;">暂无运动记录</div>'; return; }
-  const em = { '骑车':'🚲','游泳':'🏊','跑步':'🏃','瑜伽':'🧘','健身':'🏋️' };
-  c.innerHTML = sorted.map((e,i) => {
-    const idx = store.exercises.indexOf(e);
-    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px;font-size:0.85rem;border-bottom:1px solid var(--border);">' +
-      '<span>' + e.date + ' · ' + (em[e.type]||'💪') + ' ' + e.type + ' ' + e.duration + '分钟</span>' +
-      '<button class="btn btn-danger btn-sm" onclick="deleteExercise(' + idx + ')">✕</button></div>';
-  }).join('');
+  if (!c) return;
+  const movement = (OBSIDIAN_LIFE_DATA && OBSIDIAN_LIFE_DATA.movement) || [];
+  const doneDays = [];
+  for (let i = 0; i < 31; i++) {
+    if (movement[i]) doneDays.push('2026-08-' + String(i+1).padStart(2,'0'));
+  }
+  if (!doneDays.length) { c.innerHTML = '<div style="color:var(--text3);padding:8px;font-size:0.85rem;">本月暂无运动记录 · 在 Obsidian 八月日志中标记 ✅</div>'; return; }
+  c.innerHTML = doneDays.map(d => '<div style="padding:6px 8px;font-size:0.85rem;border-bottom:1px solid var(--border);">' + d + ' · 💪 已完成运动</div>').join('');
 }
 
-// ========== JOURNAL ==========
-let selectedMood = '';
-function selectMood(btn, mood) {
-  document.querySelectorAll('#section-planning .mood-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  selectedMood = mood;
+// ========== LIFE TRACKER ==========
+function renderLifeTracker() {
+  const c = document.getElementById('lifetracker-grid');
+  if (!c || !OBSIDIAN_LIFE_DATA || !OBSIDIAN_LIFE_DATA.mood.length) return;
+  const titles = [
+    { key:'mood', label:'🌤️ 心情', emojis:['😔','😐','😊','😄'] },
+    { key:'events', label:'🧩 事件', emojis:['◻️'] },
+    { key:'sleep', label:'💤 睡眠', emojis:['😵','😴','✨'] },
+    { key:'spending', label:'💰 消费', emojis:['🈚️','🟩','🟨','🟥'] },
+  ];
+  let html = '';
+  for (const t of titles) {
+    const data = OBSIDIAN_LIFE_DATA[t.key] || [];
+    // Build 7-col grid rows
+    let rows = '';
+    for (let r = 0; r < 5; r++) {
+      let rowCells = '';
+      for (let col = 0; col < 7; col++) {
+        const idx = r * 7 + col;
+        const v = idx < data.length ? data[idx] : '';
+        rowCells += '<span class="lt-cell">' + (v || '·') + '</span>';
+      }
+      rows += '<div class="lt-row">' + rowCells + '</div>';
+    }
+    html += '<div class="lt-card"><div class="lt-title">' + t.label + '</div><div class="lt-month">8月</div><div class="lt-heatmap">' + rows + '</div><div class="lt-scale">obsidian 同步</div></div>';
+  }
+  c.innerHTML = html;
 }
-function saveJournal() {
-  const ev = document.getElementById('journal-event').value.trim();
-  if (!ev && !selectedMood) { showToast('请至少记录一件事或选择一个心情'); return; }
-  const why = document.getElementById('journal-why').value.trim();
-  store.journals.unshift({
-    id: Date.now(), date: new Date().toISOString().split('T')[0],
-    mood: selectedMood || '😐', event: ev || '今天没有特别想记录的事', why
-  });
-  saveStore();
-  document.getElementById('journal-event').value = '';
-  document.getElementById('journal-why').value = '';
-  document.querySelectorAll('#section-planning .mood-btn').forEach(b => b.classList.remove('selected'));
-  selectedMood = '';
-  renderJournals();
-  showToast('日志已保存 🌙');
+
+// 今日叙事
+function renderJournalToday() {
+  const c = document.getElementById('journal-today');
+  if (!c || !OBSIDIAN_JOURNAL_DATA || OBSIDIAN_JOURNAL_DATA.mood === '◻️') return;
+  const j = OBSIDIAN_JOURNAL_DATA;
+  let html = '<div class="card" style="margin-bottom:0;"><div class="card-title">📓 ' + j.date + ' · ' + j.mood + '</div>';
+  if (j.event) html += '<p style="font-size:0.9rem;color:var(--text);white-space:pre-wrap;">' + j.event + '</p>';
+  if (j.why) html += '<p style="font-size:0.85rem;color:var(--text2);margin-top:6px;">💭 ' + j.why + '</p>';
+  html += '</div>';
+  c.innerHTML = html;
+}
+
+// 重写 renderJournals：同时展示 OBSIDIAN_JOURNAL_DATA 纳
+function renderJournals() {
+  const c = document.getElementById('journal-list');
+  // 如果有 Obsidian 同步数据，优先展示
+  if (OBSIDIAN_JOURNAL_DATA && OBSIDIAN_JOURNAL_DATA.mood && OBSIDIAN_JOURNAL_DATA.mood !== '◻️') {
+    const j = OBSIDIAN_JOURNAL_DATA;
+    const exists = store.journals.find(x => x._obsidian && x.date === j.date);
+    if (!exists) {
+      store.journals = store.journals.filter(x => x.date !== j.date);
+      store.journals.unshift({ id: -1, date: j.date, mood: j.mood, event: j.event || '', why: j.why || '', _obsidian: true });
+    }
+  }
+  if (!store.journals.length) {
+    c.innerHTML = '<div style="color:var(--text3);text-align:center;padding:20px;">日志从 Obsidian 每日同步 · 安心记录 ✨</div>';
+    return;
+  }
+  const sorted = [...store.journals].sort((a,b) => b.date.localeCompare(a.date));
+  c.innerHTML = sorted.map(j => '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.85rem;">' +
+    '<span style="flex-shrink:0;width:32px;text-align:center;font-size:1.2rem;">' + (j.mood||'') + '</span>' +
+    '<div style="flex:1;"><div style="display:flex;justify-content:space-between;align-items:center;">' +
+    '<span style="font-weight:600;">' + j.date + '</span>' +
+    (j._obsidian ? '<span style="font-size:0.7rem;background:var(--purple-light);color:var(--purple);padding:2px 6px;border-radius:4px;">obsidian</span>' : '') +
+    '</div>' +
+    (j.event ? '<div style="color:var(--text);margin-top:2px;white-space:pre-wrap;">' + j.event + '</div>' : '') +
+    (j.why ? '<div style="color:var(--text2);font-size:0.8rem;margin-top:2px;">💭 ' + j.why + '</div>' : '') +
+    '</div></div>').join('');
 }
 
 // ========== SHARE TO PHONE NOTES / MEMO ==========
@@ -1569,26 +1601,6 @@ function deleteJournal(id) {
   if (!confirm('确定删除这条日志？')) return;
   store.journals = store.journals.filter(j => j.id !== id);
   saveStore(); renderJournals();
-}
-function renderJournals() {
-  const c = document.getElementById('journal-list');
-  if (!store.journals.length) {
-    c.innerHTML = '<div style="color:var(--text3);text-align:center;padding:20px;">日志将按日期自动保存和排序</div>';
-    return;
-  }
-  const sorted = [...store.journals].sort((a,b) => b.date.localeCompare(a.date));
-  c.innerHTML = sorted.map(j => `
-    <div style="padding:14px;background:var(--bg-card2);border-radius:8px;margin-bottom:8px;border:1px solid var(--border);">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
-        <span style="font-weight:600;font-size:0.9rem;">${j.date} ${j.mood}</span>
-        <div style="display:flex;gap:4px;">
-          <button class="btn btn-outline btn-sm" onclick="shareToNotes('${j.event.replace(/'/g, "\\'")}${j.why ? '\\n\\n💭 ' + j.why.replace(/'/g, "\\'") : ''}', '每日日志')" style="font-size:0.7rem;">📱 存到备忘录</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteJournal(${j.id})">删除</button>
-        </div>
-      </div>
-      <div style="font-size:0.88rem;line-height:1.7;">${j.event}</div>
-      ${j.why ? '<div style="font-size:0.8rem;color:var(--text2);margin-top:6px;">💭 ' + j.why + '</div>' : ''}
-    </div>`).join('');
 }
 
 // ========== ENGLISH LEARNING ==========
@@ -1799,9 +1811,10 @@ function switchEnglishTab(name) {
 
 // ========== INIT ==========
 function init() {
-  document.getElementById('ex-date').value = new Date().toISOString().split('T')[0];
   renderExerciseGrid();
   renderExerciseList();
+  renderLifeTracker();
+  renderJournalToday();
   renderJournals();
   renderDoneItems();
   renderBooks();
