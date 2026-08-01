@@ -481,8 +481,8 @@ body {
 .subtab.active { background:var(--coral-light); border-color:var(--coral); color:var(--coral); font-weight:600; }
 
 /* Growth/Planning content panels */
-.growth-panel, .planning-panel { display:none; }
-.growth-panel.active, .planning-panel.active { display:block; animation: fadeIn 0.3s ease; }
+.growth-panel, .planning-panel, .eng-panel { display:none; }
+.growth-panel.active, .planning-panel.active, .eng-panel.active { display:block; animation: fadeIn 0.3s ease; }
 
 /* Toast */
 .toast {
@@ -700,7 +700,7 @@ body {
     <section class="section" id="section-english">
       <div class="section-hero">
         <h2>🗣️ 英语口语工作台</h2>
-        <p>雅思6.5 · 六级562 · 每日15分钟口语打卡</p>
+        <p>每日15分钟口语打卡</p>
       </div>
 
       <!-- 四大板块卡片导航 -->
@@ -1197,6 +1197,11 @@ body {
 </div>
 
 <script>
+<!-- OBSIDIAN_CHECKINS_PLACEHOLDER -->
+<script>
+// 从 Obsidian 同步的打卡日期（Python 脚本自动注入）
+const OBSIDIAN_CHECKINS = ["2026-08-01"];</script>
+<script>
 // ========== DATA STORE ==========
 const STORE_KEY = 'lemonhui_workbench_v2';
 let store = JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || {
@@ -1209,6 +1214,12 @@ let store = JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || {
   currentMood: '',
   currentBookId: null
 };
+
+// 合并 Obsidian 同步的打卡记录
+OBSIDIAN_CHECKINS.forEach(d => {
+  if (!store.engCheckins.includes(d)) store.engCheckins.push(d);
+});
+store.engCheckins.sort();
 
 function saveStore() { localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
 
@@ -1230,7 +1241,7 @@ function switchSection(name) {
   // 切换到对应板块时刷新渲染
   if (name === 'growth') { renderBooks(); renderNotes(); }
   if (name === 'planning') { renderDoneItems(); renderExerciseGrid(); renderJournals(); }
-  if (name === 'english') { renderEngTasks(); renderEngCheckin(); }
+  if (name === 'english') { switchEnglishTab('tasks'); }
 }
 
 function switchGrowthTab(name) {
@@ -1746,11 +1757,6 @@ function switchEnglishTab(name) {
   if (name === 'speaking') renderEngShadowing();
   if (name === 'checkin') renderEngCheckin();
 }
-
-/* Add eng-panel class */
-const engStyle = document.createElement('style');
-engStyle.textContent = '.eng-panel{display:none;}.eng-panel.active{display:block;animation:fadeIn 0.3s ease;}';
-document.head.appendChild(engStyle);
 
 // ========== INIT ==========
 function init() {
