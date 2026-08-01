@@ -1219,6 +1219,7 @@ OBSIDIAN_CHECKINS.forEach(d => {
   if (!store.engCheckins.includes(d)) store.engCheckins.push(d);
 });
 store.engCheckins.sort();
+saveStore();
 
 function saveStore() { localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
 
