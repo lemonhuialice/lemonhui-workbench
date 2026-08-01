@@ -1196,23 +1196,34 @@ body {
   </nav>
 </div>
 
-<!-- OBSIDIAN_CHECKINS_PLACEHOLDER -->
+<!-- OBSIDIAN_PLACEHOLDER -->
 <script>
 // 从 Obsidian 同步的打卡日期（Python 脚本自动注入）
 const OBSIDIAN_CHECKINS = ["2026-08-01"];</script>
 <script>
+// 从 Obsidian 同步的今日日志（Python 脚本自动注入）
+const OBSIDIAN_JOURNAL_DATA = {"date": "2026-08-01", "mood": "😄", "event": "📍 在小石上班地方学习，练了英语新闻复述，完善了工作台", "why": "", "trackers": {"事件": "💻", "睡眠": "🌞", "消费": "🈚️", "开心": "◻️", "阅读": "◻️", "创作": "◻️", "运动": "◻️"}, "tags": "#仅留日记 #学习模式候选", "discover": ""};</script>
+<script>
 // ========== DATA STORE ==========
 const STORE_KEY = 'lemonhui_workbench_v2';
-let store = JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || {
-  books: [],
-  notes: [],
-  doneItems: [],
-  exercises: [{ type: '骑车', duration: 30, date: '2026-07-15' }],
-  journals: [],
-  engCheckins: [],
-  currentMood: '',
-  currentBookId: null
-};
+const STORE_VERSION = 3; // bump when store schema changes
+
+let store = JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || null;
+// 版本不匹配或首次初始化 → 用最新默认值
+if (!store || store._version !== STORE_VERSION) {
+  store = {
+    _version: STORE_VERSION,
+    books: [],
+    notes: [],
+    doneItems: [],
+    exercises: [{ type: '骑车', duration: 30, date: '2026-07-15' }],
+    journals: [],
+    engCheckins: ["2026-08-01"],
+    currentMood: '',
+    currentBookId: null
+  };
+  saveStore();
+}
 
 // 合并 Obsidian 同步的打卡记录
 OBSIDIAN_CHECKINS.forEach(d => {
@@ -1220,6 +1231,34 @@ OBSIDIAN_CHECKINS.forEach(d => {
 });
 store.engCheckins.sort();
 saveStore();
+
+// 合并 Obsidian 同步的今日日志
+if (OBSIDIAN_JOURNAL_DATA && OBSIDIAN_JOURNAL_DATA.mood && OBSIDIAN_JOURNAL_DATA.mood !== '◻️') {
+  const j = OBSIDIAN_JOURNAL_DATA;
+  const exists = store.journals.find(x => x._obsidian && x.date === j.date);
+  if (!exists) {
+    // 移除同一天的旧记录（非 Obsidian 来源）
+    store.journals = store.journals.filter(x => x.date !== j.date);
+    store.journals.unshift({
+      id: Date.now(),
+      date: j.date,
+      mood: j.mood || '😐',
+      event: j.event || '今天没有特别想记录的事',
+      why: j.why || '',
+      _obsidian: true
+    });
+    saveStore();
+  }
+}
+
+// DEBUG: verify checkins loaded (remove after confirmed)
+(function() {
+  var d = document.createElement('div');
+  d.id = '_dbg_checkins';
+  d.style.cssText = 'position:fixed;bottom:4px;left:4px;z-index:99999;background:#FF6B6B;color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-family:monospace;';
+  d.textContent = '✓ checkins:' + JSON.stringify(store.engCheckins);
+  document.addEventListener('DOMContentLoaded', function() { document.body.appendChild(d); });
+})();
 
 function saveStore() { localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
 
