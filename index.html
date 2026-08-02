@@ -354,6 +354,27 @@ body {
 .vocab-word { font-weight: 600; font-size: 0.88rem; color: var(--text); }
 .vocab-def { font-size: 0.75rem; color: var(--text2); margin-top: 2px; }
 
+/* TTS speak buttons & controls */
+.speak-btn { cursor: pointer; font-size: 0.95rem; opacity: 0.5; transition: opacity 0.2s, transform 0.15s; vertical-align: middle; margin-left: 6px; display: inline-block; }
+.speak-btn:hover { opacity: 1; transform: scale(1.2); }
+.speak-btn.speaking { opacity: 1; animation: speakPulse 1s ease-in-out infinite; }
+@keyframes speakPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+.tts-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; background: var(--bg-card2); border-radius: 10px; margin-bottom: 14px; font-size: 0.75rem; }
+.tts-bar select, .tts-bar button { border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 0.75rem; background: var(--bg-card); color: var(--text); cursor: pointer; }
+.tts-bar select:hover, .tts-bar button:hover { border-color: var(--blue); }
+.tts-bar input[type=range] { width: 70px; cursor: pointer; }
+.tts-bar label { color: var(--text3); white-space: nowrap; }
+.tts-stop { background: var(--coral-light) !important; border-color: var(--coral) !important; color: var(--coral) !important; font-weight: 600; }
+
+/* Video recommendation cards */
+.vid-rec-card { display: flex; gap: 12px; padding: 12px 14px; background: var(--bg-card2); border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); transition: border-color 0.2s; }
+.vid-rec-card:hover { border-color: var(--purple); }
+.vid-rec-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1.8; }
+.vid-rec-info { flex: 1; min-width: 0; }
+.vid-rec-name { font-weight: 600; font-size: 0.85rem; color: var(--text); }
+.vid-rec-desc { font-size: 0.75rem; color: var(--text2); margin-top: 3px; line-height: 1.4; }
+.vid-rec-link { font-size: 0.72rem; margin-top: 4px; }
+
 /* Check-in grid (similar to exercise grid) */
 .checkin-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin: 12px 0; }
 .checkin-day {
@@ -769,9 +790,17 @@ body {
             💡 <strong>跟读三步法：</strong>① 先听一遍理解大意 → ② 逐句暂停模仿语调 → ③ 不看文本再跟读一遍
           </div>
         </div>
-      </div>
 
-      <!-- Resources Panel -->
+        <div class="card" style="margin-top:16px;">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">📺</span>场景视频推荐 · Video Resources</div>
+            <span class="tag tag-purple" id="vid-theme-tag">今日主题</span>
+          </div>
+          <div id="vid-theme-content"></div>
+          <div style="margin-top:16px;font-size:0.8rem;font-weight:600;color:var(--text2);margin-bottom:10px;">📂 按场景分类的宝藏频道</div>
+          <div id="vid-channels-content"></div>
+        </div>
+      </div>
       <div class="eng-panel" id="english-resources">
         <div class="card">
           <div class="card-title" style="margin-bottom:12px;"><span class="emoji">🎧</span>推荐播客 Podcasts</div>
@@ -1148,8 +1177,8 @@ body {
       <div class="planning-panel" id="planning-journal">
         <div class="card">
           <div class="card-header">
-          <div class="card-title"><span class="emoji">📓</span>今日日志 · 8月2日</div>
-          <span class="tag tag-pink">Day 32</span>
+          <div class="card-title"><span class="emoji">📓</span><span id="journal-title-date">今日日志</span></div>
+          <span class="tag tag-pink" id="journal-title-day">Day</span>
           </div>
           <!-- LifeTracker 全月热度图（来自 Obsidian 每日日志同步） -->
           <div class="lifetracker-grid" id="lifetracker-grid"></div>
@@ -1200,7 +1229,7 @@ const OBSIDIAN_JOURNAL_DATA = {"date": "2026-08-01", "mood": "😄", "event": "�
 <script>
 // ========== DATA STORE ==========
 const STORE_KEY = 'lemonhui_workbench_v2';
-const STORE_VERSION = 4; // bump when store schema changes
+const STORE_VERSION = 5; // bump when store schema changes
 
 let store = JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || null;
 // 版本不匹配或首次初始化 → 用最新默认值
@@ -1244,15 +1273,6 @@ if (OBSIDIAN_JOURNAL_DATA && OBSIDIAN_JOURNAL_DATA.mood && OBSIDIAN_JOURNAL_DATA
     saveStore();
   }
 }
-
-// DEBUG: verify checkins loaded (remove after confirmed)
-(function() {
-  var d = document.createElement('div');
-  d.id = '_dbg_checkins';
-  d.style.cssText = 'position:fixed;bottom:4px;left:4px;z-index:99999;background:#FF6B6B;color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;font-family:monospace;';
-  d.textContent = '✓ checkins:' + JSON.stringify(store.engCheckins);
-  document.addEventListener('DOMContentLoaded', function() { document.body.appendChild(d); });
-})();
 
 function saveStore() { localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
 
@@ -1420,41 +1440,45 @@ function renderNotes() {
     </div>`).join('');
 }
 
-// ========== DONE ITEMS ==========
-function addDone() { document.getElementById('done-form').style.display = 'block'; }
-function cancelDone() { document.getElementById('done-form').style.display = 'none'; document.getElementById('done-input').value = ''; }
-function saveDone() {
-  const text = document.getElementById('done-input').value.trim();
-  if (!text) return;
-  store.doneItems.unshift({
-    id: Date.now(), text,
-    category: document.getElementById('done-category').value,
-    date: new Date().toISOString().split('T')[0]
-  });
-  saveStore(); cancelDone(); renderDoneItems();
-  showToast('已记录 ✅');
-}
-function deleteDone(id) { store.doneItems = store.doneItems.filter(d => d.id !== id); saveStore(); renderDoneItems(); }
+// ========== DONE ITEMS (Obsidian 只读展示) ==========
 function renderDoneItems() {
   const c = document.getElementById('done-list');
-  const today = new Date().toISOString().split('T')[0];
-  const items = store.doneItems.filter(d => d.date === today);
+  // 从 Obsidian 今日日志提取完成事项
+  const j = OBSIDIAN_JOURNAL_DATA || {};
+  const items = [];
+  if (j.mood && j.mood !== '◻️') items.push({ emoji: j.mood, text: j.event || '今日记录已同步' });
+  if (OBSIDIAN_LIFE_DATA && OBSIDIAN_LIFE_DATA.movement) {
+    const today = new Date().getDate();
+    if (OBSIDIAN_LIFE_DATA.movement[today - 1]) items.push({ emoji: '💪', text: '今日运动已完成' });
+  }
+  if (store.engCheckins && store.engCheckins.includes(new Date().toISOString().split('T')[0])) {
+    items.push({ emoji: '🎙️', text: '今日英语打卡已完成' });
+  }
+
   if (!items.length) {
-    c.innerHTML = '<div style="color:var(--text3);text-align:center;padding:20px;">今天完成了什么？不需要排得很满，记录真实的进步就好 🌿</div>';
+    c.innerHTML = '<div style="color:var(--text3);text-align:center;padding:20px;">在 Obsidian 中记录你的每一天 · 自动同步到工作台 🌿</div>';
   } else {
-    const emoji = { career: '💼', finance: '💹', life: '🌿', other: '📌' };
     c.innerHTML = items.map(d => `
       <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-card2);border-radius:8px;margin-bottom:6px;border:1px solid var(--border);">
-        <span>${emoji[d.category]||'📌'}</span><span style="flex:1;font-size:0.9rem;">${d.text}</span>
-        <button class="btn btn-danger btn-sm" onclick="deleteDone(${d.id})">✕</button>
+        <span>${d.emoji}</span><span style="flex:1;font-size:0.9rem;">${d.text}</span>
+        <span class="tag tag-green" style="font-size:0.65rem;">Obsidian</span>
       </div>`).join('');
   }
-  const cc = store.doneItems.filter(d => d.category==='career').length;
-  const mc = store.doneItems.filter(d => d.category==='finance').length;
-  const lc = store.doneItems.filter(d => d.category==='life').length;
-  document.getElementById('stat-career-count').textContent = cc + 2;
-  document.getElementById('stat-market-count').textContent = mc;
-  document.getElementById('stat-recovery-count').textContent = lc + 1;
+
+  // 更新统计卡片（数据来自 Obsidian）
+  const diaryDays = OBSIDIAN_LIFE_DATA && OBSIDIAN_LIFE_DATA.mood
+    ? OBSIDIAN_LIFE_DATA.mood.filter(m => m && m !== '◻️').length : 0;
+  const exerciseDays = OBSIDIAN_LIFE_DATA && OBSIDIAN_LIFE_DATA.movement
+    ? OBSIDIAN_LIFE_DATA.movement.filter(m => m === true).length : 0;
+  const moodEmoji = (OBSIDIAN_JOURNAL_DATA && OBSIDIAN_JOURNAL_DATA.mood && OBSIDIAN_JOURNAL_DATA.mood !== '◻️')
+    ? OBSIDIAN_JOURNAL_DATA.mood : '-';
+
+  const elDiary = document.getElementById('stat-diary-count');
+  const elMood = document.getElementById('stat-mood-count');
+  const elExercise = document.getElementById('stat-exercise-count');
+  if (elDiary) elDiary.textContent = diaryDays;
+  if (elMood) elMood.textContent = moodEmoji;
+  if (elExercise) elExercise.textContent = exerciseDays;
 }
 
 // ========== EXERCISE ==========
@@ -1521,9 +1545,20 @@ function renderLifeTracker() {
 
 // 今日叙事
 function renderJournalToday() {
+  // 动态更新标题
+  const j = OBSIDIAN_JOURNAL_DATA || {};
+  const titleEl = document.getElementById('journal-title-date');
+  const dayEl = document.getElementById('journal-title-day');
+  if (j.date) {
+    const d = new Date(j.date);
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    if (titleEl) titleEl.textContent = '今日日志 · ' + month + '月' + day + '日';
+    if (dayEl) dayEl.textContent = 'Day ' + day;
+  }
+
   const c = document.getElementById('journal-today');
-  if (!c || !OBSIDIAN_JOURNAL_DATA || OBSIDIAN_JOURNAL_DATA.mood === '◻️') return;
-  const j = OBSIDIAN_JOURNAL_DATA;
+  if (!c || !j.mood || j.mood === '◻️') return;
   let html = '<div class="card" style="margin-bottom:0;"><div class="card-title">📓 ' + j.date + ' · ' + j.mood + '</div>';
   if (j.event) html += '<p style="font-size:0.9rem;color:var(--text);white-space:pre-wrap;">' + j.event + '</p>';
   if (j.why) html += '<p style="font-size:0.85rem;color:var(--text2);margin-top:6px;">💭 ' + j.why + '</p>';
@@ -1597,13 +1632,51 @@ function copyToClipboard(text) {
     showToast('📋 已复制，请打开备忘录粘贴');
   }
 }
-function deleteJournal(id) {
-  if (!confirm('确定删除这条日志？')) return;
-  store.journals = store.journals.filter(j => j.id !== id);
-  saveStore(); renderJournals();
-}
 
 // ========== ENGLISH LEARNING ==========
+// --- TTS (Text-to-Speech) via Web Speech API ---
+let ttsRate = 0.9;
+let ttsLang = 'en-US';
+let ttsSpeakingEl = null;
+
+function speakText(text, btnEl) {
+  if (!window.speechSynthesis) { showToast('当前浏览器不支持语音朗读'); return; }
+  window.speechSynthesis.cancel();
+  // clear previous active state
+  if (ttsSpeakingEl) { ttsSpeakingEl.classList.remove('speaking'); ttsSpeakingEl = null; }
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = ttsLang;
+  u.rate = ttsRate;
+  const voices = window.speechSynthesis.getVoices();
+  const v = voices.find(v => v.lang === ttsLang) || voices.find(v => v.lang && v.lang.startsWith('en'));
+  if (v) u.voice = v;
+  u.onend = function() { if (btnEl) { btnEl.classList.remove('speaking'); } ttsSpeakingEl = null; };
+  u.onerror = function() { if (btnEl) { btnEl.classList.remove('speaking'); } ttsSpeakingEl = null; };
+  if (btnEl) { btnEl.classList.add('speaking'); ttsSpeakingEl = btnEl; }
+  window.speechSynthesis.speak(u);
+}
+
+function stopTTS() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  if (ttsSpeakingEl) { ttsSpeakingEl.classList.remove('speaking'); ttsSpeakingEl = null; }
+}
+
+function speakDialogueAll() {
+  const d = getTodayEngContent();
+  if (!d || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  if (ttsSpeakingEl) { ttsSpeakingEl.classList.remove('speaking'); ttsSpeakingEl = null; }
+  d.dialogue.forEach((line, i) => {
+    const u = new SpeechSynthesisUtterance(line.t);
+    u.lang = ttsLang;
+    u.rate = ttsRate;
+    const voices = window.speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang === ttsLang) || voices.find(v => v.lang && v.lang.startsWith('en'));
+    if (v) u.voice = v;
+    window.speechSynthesis.speak(u);
+  });
+}
+
 // 30-day rotating daily spoken English curriculum
 const ENG_CURRICULUM = [
   {theme:"日常问候",phrase:"Long time no see! How have you been?",phraseZh:"好久不见！你最近怎么样？",phraseUse:"偶遇熟人时替代 \"How are you?\"，更自然",dialogue:[{r:"A",t:"Hey! Long time no see! How have you been?"},{r:"B",t:"I know, right? I've been pretty busy with work. What about you?"},{r:"A",t:"Same here. Just trying to keep up with everything."},{r:"B",t:"We should grab coffee sometime and catch up properly."}],vocab:[["catch up","叙旧，聊聊近况"],["keep up with","跟上，应付"],["grab coffee","喝杯咖啡（非正式邀约）"],["pretty busy","挺忙的"],["same here","我也是"]],shadow:"Long time no see! How have you been? I know, right? We should grab coffee sometime and catch up properly."},
@@ -1662,10 +1735,25 @@ function renderEngTasks() {
   const container = document.getElementById('eng-tasks-content');
   let html = '';
 
+  // TTS control bar
+  html += '<div class="tts-bar">';
+  html += '<label>🔊 朗读</label>';
+  html += '<select id="tts-lang-sel" onchange="ttsLang=this.value">';
+  html += '<option value="en-US">🇺🇸 美式</option>';
+  html += '<option value="en-GB">🇬🇧 英式</option>';
+  html += '<option value="en-AU">🇦🇺 澳式</option>';
+  html += '</select>';
+  html += '<label>语速</label>';
+  html += '<input type="range" min="0.5" max="1.3" step="0.1" value="0.9" onchange="ttsRate=parseFloat(this.value);document.getElementById(\'tts-rate-lbl\').textContent=this.value+\'x\'">';
+  html += '<span id="tts-rate-lbl" style="color:var(--text3);min-width:28px;">0.9x</span>';
+  html += '<button onclick="speakDialogueAll()">▶️ 朗读全对话</button>';
+  html += '<button class="tts-stop" onclick="stopTTS()">⏹ 停止</button>';
+  html += '</div>';
+
   // Task 1: Daily Phrase
   html += '<div class="daily-phrase-card">';
   html += '<div style="font-size:0.75rem;color:var(--text3);margin-bottom:6px;">📌 任务一 · 每日一句</div>';
-  html += '<div class="daily-phrase-en">' + d.phrase.replace(/'/g, '&#39;') + '</div>';
+  html += '<div class="daily-phrase-en">' + d.phrase.replace(/'/g, '&#39;') + ' <span class="speak-btn" data-t="' + encodeURIComponent(d.phrase) + '" onclick="speakText(decodeURIComponent(this.dataset.t),this)">🔊</span></div>';
   html += '<div class="daily-phrase-zh">' + d.phraseZh + '</div>';
   html += '<div class="daily-phrase-use">💡 ' + d.phraseUse + '</div>';
   html += '</div>';
@@ -1676,9 +1764,9 @@ function renderEngTasks() {
   d.dialogue.forEach(line => {
     html += '<div class="dialogue-line ' + line.r.toLowerCase() + '">';
     html += '<div class="dialogue-speaker">' + (line.r === 'A' ? '🧑 Speaker A' : '👤 Speaker B') + '</div>';
-    html += line.t.replace(/'/g, '&#39;') + '</div>';
+    html += line.t.replace(/'/g, '&#39;') + ' <span class="speak-btn" data-t="' + encodeURIComponent(line.t) + '" onclick="speakText(decodeURIComponent(this.dataset.t),this)">🔊</span></div>';
   });
-  html += '<div style="font-size:0.75rem;color:var(--text3);margin-top:8px;">🎯 大声朗读对话，注意语调和连读。尝试不看文本复述一遍。</div>';
+  html += '<div style="font-size:0.75rem;color:var(--text3);margin-top:8px;">🎯 点击🔊逐句朗读，或点"朗读全对话"连续播放。注意语调和连读，尝试不看文本复述。</div>';
   html += '</div>';
 
   // Task 3: Vocab
@@ -1686,7 +1774,7 @@ function renderEngTasks() {
   html += '<div style="font-size:0.85rem;font-weight:600;margin-bottom:10px;"><span class="emoji">📖</span>任务三 · 今日词汇（' + d.vocab.length + '个）</div>';
   html += '<div class="vocab-grid">';
   d.vocab.forEach(v => {
-    html += '<div class="vocab-item"><div class="vocab-word">' + v[0] + '</div><div class="vocab-def">' + v[1] + '</div></div>';
+    html += '<div class="vocab-item"><div class="vocab-word">' + v[0] + ' <span class="speak-btn" data-t="' + encodeURIComponent(v[0]) + '" onclick="speakText(decodeURIComponent(this.dataset.t),this)">🔊</span></div><div class="vocab-def">' + v[1] + '</div></div>';
   });
   html += '</div></div>';
 
@@ -1716,12 +1804,98 @@ function renderEngShadowing() {
   const container = document.getElementById('eng-shadowing-content');
   let html = '<div style="font-size:0.9rem;line-height:1.9;padding:8px 0;color:var(--text);background:var(--bg-card2);border-radius:8px;padding:16px;">';
   html += '<div style="font-size:0.72rem;color:var(--text3);margin-bottom:6px;">📢 Shadowing 素材 · 跟读这段话：</div>';
-  html += d.shadow.replace(/'/g, '&#39;');
+  html += d.shadow.replace(/'/g, '&#39;') + ' <span class="speak-btn" data-t="' + encodeURIComponent(d.shadow) + '" onclick="speakText(decodeURIComponent(this.dataset.t),this)" style="font-size:1.1rem;">🔊</span>';
   html += '</div>';
   html += '<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">';
   html += '<span class="tag tag-blue">连读练习</span><span class="tag tag-orange">语调模仿</span><span class="tag tag-green">中速朗读</span><span class="tag tag-purple">不看文本复述</span>';
   html += '</div>';
   container.innerHTML = html;
+}
+
+// --- Video recommendations by theme ---
+const THEME_VIDEO_MAP = {
+  "日常问候":"English greeting small talk conversation",
+  "点餐场景":"English ordering food restaurant conversation",
+  "问路指路":"English asking for directions conversation",
+  "购物砍价":"English shopping bargaining conversation",
+  "约会闲聊":"English date small talk conversation",
+  "表达观点":"English expressing opinion politely",
+  "天气闲聊":"English small talk weather conversation",
+  "表达感谢":"English expressing gratitude formally",
+  "面试场景":"English job interview conversation",
+  "电话沟通":"English business phone call conversation",
+  "道歉回应":"English apologizing and responding",
+  "旅行问询":"English travel asking locals conversation",
+  "邀约拒绝":"English declining invitation politely",
+  "表达困惑":"English asking for clarification conversation",
+  "健身房":"English gym conversation small talk",
+  "抱怨委婉":"English complaining politely workplace",
+  "鼓励他人":"English encouraging someone words",
+  "闲聊天气":"English small talk weather gorgeous",
+  "寻求建议":"English asking for advice conversation",
+  "表达赞同":"English agreeing strongly conversation",
+  "催促委婉":"English following up politely email",
+  "接话技巧":"English conversation衔接 keeping conversation going",
+  "会议插话":"English meeting interrupting politely",
+  "表达失望":"English expressing disappointment politely",
+  "打开话匣":"English breaking ice stranger conversation",
+  "讲故事":"English storytelling conversation natural",
+  "给建议":"English giving advice conversation",
+  "问隐私":"English asking personal questions politely",
+  "拖延承认":"English admitting procrastination conversation",
+  "结束对话":"English ending conversation naturally"
+};
+
+const VID_CHANNELS = [
+  {cat:"🗣️ 日常社交",name:"Speak English with Vanessa",desc:"美式口语+真实生活场景，500万订阅，每集一个实用表达场景",url:"https://www.youtube.com/@speakenglishwithvanessa",icon:"🇺🇸",color:"var(--coral-light)"},
+  {cat:"🗣️ 日常社交",name:"English with Lucy",desc:"英式英语+日常会话，Lucy老师讲解地道表达，550万订阅",url:"https://www.youtube.com/@EnglishwithLucy",icon:"🇬🇧",color:"var(--blue-light)"},
+  {cat:"🍽️ 生活场景",name:"Learn English with TV Series",desc:"用美剧/英剧片段学真实口语，场景代入感强，适合看电影学英语",url:"https://www.youtube.com/@LearnEnglishWithTVSeries",icon:"🎬",color:"var(--purple-light)"},
+  {cat:"🍽️ 生活场景",name:"Bob the Canadian",desc:"加拿大老师，真实场景拍摄（超市/餐厅/机场），沉浸式学日常英语",url:"https://www.youtube.com/@BobtheCanadian",icon:"🇨🇦",color:"var(--green-light)"},
+  {cat:"💼 职场商务",name:"Business English Pod",desc:"职场英语专项：会议/邮件/电话/演讲，系统化课程，适合职场进阶",url:"https://www.youtube.com/@BusinessEnglishPod",icon:"💼",color:"var(--orange-light)"},
+  {cat:"💼 职场商务",name:"BBC Learning English",desc:"BBC官方频道，含English at Work系列（职场情景剧）+ 6 Minute English",url:"https://www.youtube.com/@BBCLearningEnglish",icon:"🇬🇧",color:"var(--teal-light)"},
+  {cat:"🎯 发音纠正",name:"Rachel's English",desc:"美式发音权威，逐音标拆解连读/弱读/语调，500万订阅",url:"https://www.youtube.com/@rachelsenglish",icon:"🎤",color:"var(--pink-light)"},
+  {cat:"🎯 发音纠正",name:"mmmEnglish (Emma)",desc:"澳洲Emma老师，语法可视化+Shadowing跟读，适合中级学习者",url:"https://www.youtube.com/@mmmEnglish_emma",icon:"🇦🇺",color:"var(--yellow-light)"},
+  {cat:"📖 词汇表达",name:"English Fluency Journey",desc:"高频词汇+短语动词+习语，沉浸式重复训练，适合碎片时间",url:"https://www.youtube.com/@EnglishFluencyJourney",icon:"📖",color:"var(--coral-light)"},
+  {cat:"📖 词汇表达",name:"BBC 6 Minute English",desc:"BBC经典6分钟英语，每集一个话题+词汇表，音频+视频版均有",url:"https://www.youtube.com/playlist?list=PLcetZ6g996pQ3DE8D8M2z3Tm7n5j7z3Fz",icon:"🎧",color:"var(--blue-light)"}
+];
+
+function renderVidRec() {
+  const d = getTodayEngContent();
+  // Theme-based search
+  const themeTag = document.getElementById('vid-theme-tag');
+  if (themeTag) themeTag.textContent = d.theme;
+  const themeC = document.getElementById('vid-theme-content');
+  if (themeC) {
+    const q = THEME_VIDEO_MAP[d.theme] || ('English ' + d.theme + ' conversation');
+    const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
+    themeC.innerHTML = '<div class="vid-rec-card">' +
+      '<div class="vid-rec-icon">🔍</div>' +
+      '<div class="vid-rec-info">' +
+      '<div class="vid-rec-name">今日主题「' + d.theme + '」相关视频</div>' +
+      '<div class="vid-rec-desc">点击在 YouTube 搜索「' + q + '」，找到真实情景对话教学视频</div>' +
+      '<div class="vid-rec-link"><a href="' + ytUrl + '" target="_blank" style="color:var(--blue);">▶️ 在 YouTube 搜索 →</a></div>' +
+      '</div></div>';
+  }
+  // Channel list grouped by category
+  const chC = document.getElementById('vid-channels-content');
+  if (chC) {
+    const cats = {};
+    VID_CHANNELS.forEach(ch => { if (!cats[ch.cat]) cats[ch.cat] = []; cats[ch.cat].push(ch); });
+    let html = '';
+    Object.keys(cats).forEach(cat => {
+      html += '<div style="font-size:0.78rem;font-weight:600;color:var(--text3);margin:10px 0 6px;">' + cat + '</div>';
+      cats[cat].forEach(ch => {
+        html += '<div class="vid-rec-card">' +
+          '<div class="vid-rec-icon" style="background:' + ch.color + ';width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;">' + ch.icon + '</div>' +
+          '<div class="vid-rec-info">' +
+          '<div class="vid-rec-name">' + ch.name + '</div>' +
+          '<div class="vid-rec-desc">' + ch.desc + '</div>' +
+          '<div class="vid-rec-link"><a href="' + ch.url + '" target="_blank" style="color:var(--blue);">▶️ 打开频道 →</a></div>' +
+          '</div></div>';
+      });
+    });
+    chC.innerHTML = html;
+  }
 }
 
 function doEnglishCheckin() {
@@ -1805,7 +1979,7 @@ function switchEnglishTab(name) {
   const panel = document.getElementById('english-' + name);
   if (panel) panel.classList.add('active');
   if (name === 'tasks') renderEngTasks();
-  if (name === 'speaking') renderEngShadowing();
+  if (name === 'speaking') { renderEngShadowing(); renderVidRec(); }
   if (name === 'checkin') renderEngCheckin();
 }
 
@@ -1822,6 +1996,9 @@ function init() {
   renderEngTasks();
   renderEngShadowing();
   renderEngCheckin();
+  renderVidRec();
+  // Trigger TTS voice loading
+  if (window.speechSynthesis) { window.speechSynthesis.getVoices(); window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices(); }; }
 }
 init();
 
