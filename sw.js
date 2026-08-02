@@ -1,5 +1,5 @@
 // Lemonhui Workbench - Service Worker
-const CACHE_NAME = 'lemonhui-v4';
+const CACHE_NAME = 'lemonhui-v5';
 
 // Auto-detect base path for subdirectory support (GitHub Pages)
 const swPath = self.location.pathname;
