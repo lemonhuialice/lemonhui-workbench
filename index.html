@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<!-- PWA Meta -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lemonhui">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#FF6B6B">
+<meta name="application-name" content="Lemonhui">
+<!-- PWA Icons -->
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+<link rel="manifest" href="manifest.json">
+<title>Lemonhui · 个人工作台</title>
+<style>
+:root {
+  /* 多巴胺色系 */
+  --coral: #FF6B6B;
+  --coral-light: #FFE0E0;
+  --orange: #FF8E53;
+  --orange-light: #FFE8D6;
+  --yellow: #FFD93D;
+  --yellow-light: #FFF8E1;
+  --green: #6BCB77;
+  --green-light: #E8F5E9;
+  --blue: #4D96FF;
+  --blue-light: #E3F0FF;
+  --purple: #C084FC;
+  --purple-light: #F3E8FF;
+  --pink: #FF6FB7;
+  --pink-light: #FFE8F2;
+  --teal: #45D9D9;
+  --teal-light: #E0F7F7;
+  /* 中性色 */
+  --bg: #FFF8F5;
+  --bg-card: #FFFFFF;
+  --bg-card2: #FFF0EB;
+  --text: #2D2D3F;
+  --text2: #6B6B80;
+  --text3: #A0A0B0;
+  --border: #F0E8E3;
+  --shadow: 0 2px 16px rgba(180,120,100,0.08);
+  --shadow-lg: 0 8px 32px rgba(180,120,100,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 8px;
+  --nav-h: 64px;
+  --sidebar-w: 220px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text3); border-radius: 4px; }
+
+/* Layout */
+.app { display:flex; min-height:100vh; }
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  transition: transform 0.3s;
+  box-shadow: 2px 0 20px rgba(180,120,100,0.06);
+}
+.main {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  padding: 24px 28px 100px;
+  max-width: 1000px;
+}
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  height: var(--nav-h);
+  z-index: 100;
+  padding: 0 8px;
+  box-shadow: 0 -2px 20px rgba(180,120,100,0.06);
+}
+
+/* Sidebar */
+.sidebar-logo {
+  padding: 0 20px 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--coral);
+  letter-spacing: -0.5px;
+}
+.sidebar-logo span { font-size: 0.72rem; color: var(--text3); display:block; margin-top:2px; font-weight:400; }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  margin: 2px 12px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  border: none;
+  background: none;
+  width: calc(100% - 24px);
+  text-align: left;
+}
+.nav-item:hover { background: var(--coral-light); color: var(--coral); }
+.nav-item.active { background: linear-gradient(135deg, var(--coral-light), var(--orange-light)); color: var(--coral); font-weight: 600; }
+.nav-icon { font-size: 1.2rem; width: 24px; text-align: center; }
+
+/* Bottom Nav */
+.bottom-nav-inner { display:flex; justify-content:space-around; align-items:center; height:100%; }
+.bnav-item {
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+  background:none; border:none; color:var(--text3); cursor:pointer;
+  font-size:0.65rem; padding:4px 8px; border-radius:8px;
+  transition:all 0.2s; min-width:56px;
+}
+.bnav-item.active { color:var(--coral); font-weight:600; }
+.bnav-icon { font-size:1.3rem; }
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s;
+}
+.card:hover { box-shadow: var(--shadow-lg); }
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title .emoji { font-size: 1.3rem; }
+
+/* Sections */
+.section { display:none; }
+.section.active { display:block; animation: fadeIn 0.35s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+
+/* Tags */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.tag-coral { background: var(--coral-light); color: var(--coral); }
+.tag-green { background: var(--green-light); color: var(--green); }
+.tag-orange { background: var(--orange-light); color: var(--orange); }
+.tag-blue { background: var(--blue-light); color: var(--blue); }
+.tag-pink { background: var(--pink-light); color: var(--pink); }
+.tag-purple { background: var(--purple-light); color: var(--purple); }
+.tag-teal { background: var(--teal-light); color: var(--teal); }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 24px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.btn-primary { background: linear-gradient(135deg, var(--coral), var(--orange)); color: #fff; box-shadow: 0 4px 14px rgba(255,107,107,0.25); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,107,107,0.35); }
+.btn-outline { background: var(--bg-card); border: 1.5px solid var(--border); color: var(--text2); }
+.btn-outline:hover { border-color: var(--coral); color: var(--coral); }
+.btn-sm { padding: 5px 14px; font-size: 0.78rem; }
+.btn-danger { background: var(--coral-light); color: var(--coral); }
+.btn-danger:hover { background: #FFD0D0; }
+
+/* Inputs */
+.input, .textarea, .select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--radius-xs);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border 0.2s;
+}
+.input:focus, .textarea:focus { border-color: var(--coral); box-shadow: 0 0 0 3px var(--coral-light); }
+.textarea { resize: vertical; min-height: 80px; }
+
+/* Progress bar */
+.progress-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--coral), var(--orange), var(--yellow));
+  transition: width 0.5s ease;
+}
+
+/* Timeline */
+.timeline { position:relative; padding-left:24px; }
+.timeline::before {
+  content:''; position:absolute; left:8px; top:4px; bottom:4px;
+  width:2px; background: linear-gradient(180deg, var(--coral-light), var(--purple-light));
+}
+.timeline-item { position:relative; padding:8px 0 16px 16px; }
+.timeline-item::before {
+  content:''; position:absolute; left:-20px; top:14px;
+  width:10px; height:10px; border-radius:50%;
+  background:var(--coral); border:2px solid var(--bg-card);
+}
+.timeline-date { font-size:0.75rem; color:var(--text3); }
+.timeline-text { font-size:0.9rem; margin-top:2px; }
+
+/* 板块切换卡片 Grid */
+.subnav-cards {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.subnav-cards.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.subnav-cards.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.subnav-card {
+  padding: 16px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 2px solid transparent;
+  transition: all 0.25s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+.subnav-card .sc-emoji { font-size: 1.6rem; }
+.subnav-card .sc-label { font-size: 0.82rem; }
+.subnav-card::after {
+  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 0; height: 3px; border-radius: 2px;
+  transition: width 0.3s;
+}
+.subnav-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.subnav-card.active { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.subnav-card.active::after { width: 40px; }
+
+/* 卡片配色 */
+.sc-finance { background: linear-gradient(135deg, #FFF5F5, #FFE8E8); border-color: #FFE0E0; }
+.sc-finance:hover, .sc-finance.active { border-color: var(--coral); background: linear-gradient(135deg, #FFEBEB, #FFDEDE); }
+.sc-finance::after { background: var(--coral); }
+
+.sc-news { background: linear-gradient(135deg, #F5F8FF, #E8F0FF); border-color: #E0E8FF; }
+.sc-news:hover, .sc-news.active { border-color: var(--blue); background: linear-gradient(135deg, #EBF2FF, #DEE8FF); }
+.sc-news::after { background: var(--blue); }
+
+.sc-reading { background: linear-gradient(135deg, #FBF5FF, #F3E8FF); border-color: #EDE0FF; }
+.sc-reading:hover, .sc-reading.active { border-color: var(--purple); background: linear-gradient(135deg, #F5EBFF, #EDE0FF); }
+.sc-reading::after { background: var(--purple); }
+
+.sc-notes { background: linear-gradient(135deg, #F5FFF5, #E8F9E8); border-color: #E0F5E0; }
+.sc-notes:hover, .sc-notes.active { border-color: var(--green); background: linear-gradient(135deg, #EBF9EB, #DEF5DE); }
+.sc-notes::after { background: var(--green); }
+
+.sc-done { background: linear-gradient(135deg, #F5FFFA, #E8F9F2); border-color: #E0F5EC; }
+.sc-done:hover, .sc-done.active { border-color: var(--green); background: linear-gradient(135deg, #EBFAF2, #DEF5EA); }
+.sc-done::after { background: var(--green); }
+
+.sc-exercise { background: linear-gradient(135deg, #FFF8F5, #FFEFE8); border-color: #FFE8D6; }
+.sc-exercise:hover, .sc-exercise.active { border-color: var(--orange); background: linear-gradient(135deg, #FFF3EB, #FFE8D6); }
+.sc-exercise::after { background: var(--orange); }
+
+.sc-journal { background: linear-gradient(135deg, #FFF5FA, #FFE8F2); border-color: #FFE0EE; }
+.sc-journal:hover, .sc-journal.active { border-color: var(--pink); background: linear-gradient(135deg, #FFEBF5, #FFDEEA); }
+.sc-journal::after { background: var(--pink); }
+
+/* English subnav cards */
+.sc-tasks { background: linear-gradient(135deg, #FFF8F5, #FFEFE8); border-color: #FFE8D6; }
+.sc-tasks:hover, .sc-tasks.active { border-color: var(--coral); background: linear-gradient(135deg, #FFF3EB, #FFE4D6); }
+.sc-tasks::after { background: var(--coral); }
+.sc-speaking { background: linear-gradient(135deg, #F5FAFF, #E8F2FF); border-color: #E0ECFF; }
+.sc-speaking:hover, .sc-speaking.active { border-color: var(--blue); background: linear-gradient(135deg, #EBF5FF, #DEEAFF); }
+.sc-speaking::after { background: var(--blue); }
+.sc-resources { background: linear-gradient(135deg, #F5FFF5, #E8F9E8); border-color: #E0F5E0; }
+.sc-resources:hover, .sc-resources.active { border-color: var(--green); background: linear-gradient(135deg, #EBF9EB, #DEF5DE); }
+.sc-resources::after { background: var(--green); }
+.sc-checkin { background: linear-gradient(135deg, #FBF5FF, #F3E8FF); border-color: #EDE0FF; }
+.sc-checkin:hover, .sc-checkin.active { border-color: var(--purple); background: linear-gradient(135deg, #F5EBFF, #EDE0FF); }
+.sc-checkin::after { background: var(--purple); }
+
+/* Daily phrase card */
+.daily-phrase-card {
+  background: linear-gradient(135deg, #FFF8F5, #FFF0EB);
+  border: 2px solid var(--coral-light);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+.daily-phrase-en { font-size: 1.15rem; font-weight: 700; color: var(--coral); line-height: 1.5; }
+.daily-phrase-zh { font-size: 0.85rem; color: var(--text2); margin-top: 6px; }
+.daily-phrase-use { font-size: 0.78rem; color: var(--text3); margin-top: 8px; font-style: italic; }
+
+/* Dialogue card */
+.dialogue-line { padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; font-size: 0.85rem; line-height: 1.5; }
+.dialogue-line.a { background: var(--blue-light); margin-right: 40px; }
+.dialogue-line.b { background: var(--coral-light); margin-left: 40px; }
+.dialogue-speaker { font-size: 0.7rem; font-weight: 700; color: var(--text3); margin-bottom: 2px; }
+
+/* Vocab grid */
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.vocab-item { background: var(--bg-card2); border-radius: 8px; padding: 10px 12px; border: 1px solid var(--border); }
+.vocab-word { font-weight: 600; font-size: 0.88rem; color: var(--text); }
+.vocab-def { font-size: 0.75rem; color: var(--text2); margin-top: 2px; }
+
+/* TTS speak buttons & controls */
+.speak-btn { cursor: pointer; font-size: 0.95rem; opacity: 0.5; transition: opacity 0.2s, transform 0.15s; vertical-align: middle; margin-left: 6px; display: inline-block; }
+.speak-btn:hover { opacity: 1; transform: scale(1.2); }
+.speak-btn.speaking { opacity: 1; animation: speakPulse 1s ease-in-out infinite; }
+@keyframes speakPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+.tts-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; background: var(--bg-card2); border-radius: 10px; margin-bottom: 14px; font-size: 0.75rem; }
+.tts-bar select, .tts-bar button { border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 0.75rem; background: var(--bg-card); color: var(--text); cursor: pointer; }
+.tts-bar select:hover, .tts-bar button:hover { border-color: var(--blue); }
+.tts-bar input[type=range] { width: 70px; cursor: pointer; }
+.tts-bar label { color: var(--text3); white-space: nowrap; }
+.tts-stop { background: var(--coral-light) !important; border-color: var(--coral) !important; color: var(--coral) !important; font-weight: 600; }
+
+/* Video recommendation cards */
+.vid-rec-card { display: flex; gap: 12px; padding: 12px 14px; background: var(--bg-card2); border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); transition: border-color 0.2s; }
+.vid-rec-card:hover { border-color: var(--purple); }
+.vid-rec-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1.8; }
+.vid-rec-info { flex: 1; min-width: 0; }
+.vid-rec-name { font-weight: 600; font-size: 0.85rem; color: var(--text); }
+.vid-rec-desc { font-size: 0.75rem; color: var(--text2); margin-top: 3px; line-height: 1.4; }
+.vid-rec-link { font-size: 0.72rem; margin-top: 4px; }
+
+/* Check-in grid (similar to exercise grid) */
+.checkin-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin: 12px 0; }
+.checkin-day {
+  aspect-ratio: 1; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; background: var(--bg); color: var(--text3);
+  border: 1px solid var(--border); position: relative;
+}
+.checkin-day.done { background: var(--coral-light); color: var(--coral); font-weight: 600; border-color: var(--coral); }
+.checkin-day.today { border: 2px solid var(--coral); box-shadow: 0 0 0 3px var(--coral-light); }
+.checkin-day .check-emoji { position: absolute; bottom: 1px; right: 2px; font-size: 0.5rem; }
+.checkin-streak { font-size: 0.78rem; color: var(--coral); font-weight: 600; }
+
+/* Exercise Grid */
+.exercise-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin: 12px 0;
+}
+.exercise-day {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  background: var(--bg);
+  color: var(--text3);
+  position: relative;
+  border: 1px solid var(--border);
+}
+.exercise-day.done { background: var(--green-light); color: var(--green); font-weight:600; border-color: var(--green); }
+.exercise-day.today { border: 2px solid var(--coral); box-shadow: 0 0 0 3px var(--coral-light); }
+
+/* LifeTracker — 心情/事件/睡眠/消费 四宫格热度图 */
+.lifetracker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 16px;
+}
+.lt-card {
+  background: var(--bg-card2);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  border: 1px solid var(--border);
+}
+.lt-title { font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.lt-month { font-size: 0.65rem; color: var(--text3); margin-bottom: 8px; }
+.lt-heatmap { font-size: 0.75rem; line-height: 1.7; }
+.lt-row { display: flex; gap: 2px; }
+.lt-cell { width: calc(100% / 7); text-align: center; }
+.lt-scale { font-size: 0.6rem; color: var(--text3); margin-top: 6px; text-align: right; }
+
+@media (max-width: 600px) {
+  .lifetracker-grid { grid-template-columns: 1fr; }
+}
+
+/* News items - clickable */
+.news-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+  margin: 0 -8px;
+  padding: 12px 8px;
+  transition: background 0.2s;
+}
+.news-item:last-child { border-bottom: none; }
+.news-item:hover { background: var(--bg-card2); }
+.news-source { font-size: 0.7rem; color: var(--text3); }
+.news-title { font-size: 0.9rem; margin: 4px 0; line-height: 1.5; }
+.news-link-icon { font-size: 0.7rem; color: var(--blue); margin-left: 4px; opacity: 0; transition: opacity 0.2s; }
+.news-item:hover .news-link-icon { opacity: 1; }
+
+/* Resource cards */
+.resource-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  background: var(--bg-card2);
+  border-radius: var(--radius-sm);
+  margin-bottom: 10px;
+  transition: transform 0.2s;
+  border: 1px solid var(--border);
+}
+.resource-card:hover { transform: translateX(4px); }
+.resource-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; flex-shrink: 0;
+}
+.resource-info { flex:1; min-width:0; }
+.resource-name { font-weight:600; font-size:0.9rem; }
+.resource-desc { font-size:0.78rem; color:var(--text2); margin-top:2px; }
+.resource-link { font-size:0.72rem; color:var(--blue); margin-top:4px; word-break:break-all; }
+
+/* Chat */
+.chat-container {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  padding: 8px 0;
+}
+.chat-msg {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  max-width: 85%;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+.chat-msg.user { background: linear-gradient(135deg, var(--coral), var(--orange)); color: #fff; margin-left: auto; border-radius: 14px 14px 4px 14px; }
+.chat-msg.ai { background: var(--purple-light); color: var(--text); border-radius: 14px 14px 14px 4px; }
+.chat-input-row { display:flex; gap:8px; }
+
+/* Mood grid */
+.mood-grid { display:flex; gap:8px; flex-wrap:wrap; }
+.mood-btn {
+  width:44px; height:44px; border-radius:50%; border:2px solid var(--border);
+  font-size:1.3rem; cursor:pointer; background:var(--bg);
+  transition:all 0.2s; display:flex; align-items:center; justify-content:center;
+}
+.mood-btn:hover { border-color:var(--pink); transform: scale(1.1); }
+.mood-btn.selected { border-color:var(--pink); background:var(--pink-light); transform: scale(1.1); }
+
+/* Stats row */
+.stats-row { display:flex; gap:12px; flex-wrap:wrap; }
+.stat-card {
+  flex:1; min-width:100px; background:var(--bg-card2);
+  border-radius:var(--radius-sm); padding:16px; text-align:center;
+  border: 1px solid var(--border);
+}
+.stat-value { font-size:1.6rem; font-weight:700; color:var(--coral); }
+.stat-label { font-size:0.72rem; color:var(--text3); margin-top:2px; }
+
+/* Sub tabs (keep as secondary) */
+.subtabs { display:flex; gap:4px; margin-bottom:16px; flex-wrap:wrap; }
+.subtab {
+  padding:6px 14px; border-radius:20px; cursor:pointer;
+  font-size:0.8rem; border:1.5px solid var(--border);
+  background:var(--bg-card); color:var(--text2); transition:all 0.2s;
+}
+.subtab.active { background:var(--coral-light); border-color:var(--coral); color:var(--coral); font-weight:600; }
+
+/* Growth/Planning content panels */
+.growth-panel, .planning-panel, .eng-panel { display:none; }
+.growth-panel.active, .planning-panel.active, .eng-panel.active { display:block; animation: fadeIn 0.3s ease; }
+
+/* Toast */
+.toast {
+  position:fixed; top:24px; left:50%; transform:translateX(-50%);
+  background: linear-gradient(135deg, var(--coral), var(--orange));
+  color:#fff; padding:12px 28px;
+  border-radius:28px; font-size:0.85rem; z-index:999;
+  box-shadow: 0 8px 24px rgba(255,107,107,0.3);
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 1.7s forwards;
+}
+@keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(-10px);} to{opacity:1;transform:translateX(-50%) translateY(0);} }
+@keyframes toastOut { from{opacity:1;transform:translateX(-50%) translateY(0);} to{opacity:0;transform:translateX(-50%) translateY(-10px);} }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar { display:none; }
+  .main { margin-left:0; padding:16px 14px 100px; }
+  .bottom-nav { display:block; }
+  .stats-row { gap:8px; }
+  .stat-card { padding:10px; }
+  .stat-value { font-size:1.3rem; }
+  .subnav-cards.cols-4 { grid-template-columns: repeat(2, 1fr); }
+  .subnav-cards.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .subnav-card { padding: 12px 8px; }
+  .subnav-card .sc-emoji { font-size: 1.3rem; }
+  .subnav-card .sc-label { font-size: 0.72rem; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .main { padding:20px 24px 40px; }
+  .subnav-cards.cols-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Section hero banner */
+.section-hero {
+  background: linear-gradient(135deg, var(--coral-light), var(--orange-light), var(--yellow-light));
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.section-hero h2 { color: var(--coral); font-size: 1.4rem; margin-bottom: 4px; }
+.section-hero p { color: var(--text2); font-size: 0.85rem; }
+
+/* Accent left border */
+.accent-left { border-left: 4px solid var(--coral); }
+.accent-left.green { border-left-color: var(--green); }
+.accent-left.blue { border-left-color: var(--blue); }
+.accent-left.pink { border-left-color: var(--pink); }
+
+@media print {
+  .sidebar, .bottom-nav { display:none; }
+  .main { margin-left:0; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      🍋 Lemonhui
+      <span>个人工作台 · 2026</span>
+    </div>
+    <button class="nav-item active" onclick="switchSection('study')" data-nav="study">
+      <span class="nav-icon">📚</span> 学习区
+    </button>
+    <button class="nav-item" onclick="switchSection('english')" data-nav="english">
+      <span class="nav-icon">🎙️</span> 英语角
+    </button>
+    <button class="nav-item" onclick="switchSection('growth')" data-nav="growth">
+      <span class="nav-icon">🌱</span> 个人成长
+    </button>
+    <button class="nav-item" onclick="switchSection('planning')" data-nav="planning">
+      <span class="nav-icon">📋</span> 个人计划
+    </button>
+    <div style="margin-top:auto; padding:16px 20px; font-size:0.7rem; color:var(--text3);">
+      v2.0 · 多巴胺版<br>
+      Road to Risk Analyst
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- ==================== STUDY SECTION ==================== -->
+    <section class="section active" id="section-study">
+      <div class="section-hero">
+        <h2>📚 学习区</h2>
+        <p>信贷风控 · SQL · 秋招准备</p>
+      </div>
+
+      <!-- Today's Focus -->
+      <div class="card accent-left">
+        <div class="card-header">
+          <div class="card-title"><span class="emoji">🎯</span>今日主线 · 8月5日</div>
+          <span class="tag tag-coral">重启计划 Day 20</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;">
+          <div style="flex:1;min-width:140px;">
+            <div style="font-size:0.75rem;color:var(--text3);">SQL 整合日</div>
+            <div style="font-weight:600;">复习第 1—7 章，不开新章节</div>
+            <div style="font-size:0.8rem;color:var(--text2);margin-top:4px;">把课程语法改写为申请、借款、还款和逾期场景</div>
+          </div>
+          <div style="flex:1;min-width:140px;">
+            <div style="font-size:0.75rem;color:var(--text3);">今日 Deliverable</div>
+            <div style="font-weight:600;">SQL Cheat Sheet + 10 条风控查询</div>
+            <div style="font-size:0.8rem;color:var(--green);margin-top:4px;">模式：标准</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SQL Progress -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="emoji">💾</span>SQL 学习进度</div>
+          <span class="tag tag-blue">B站课程: SQL进阶教程</span>
+        </div>
+        <div class="progress-bar" style="margin-bottom:8px;">
+          <div class="progress-fill" style="width:65%;"></div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--text2);margin-bottom:12px;">总体进度：P62 中已完成 P12（第2章P6）</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;">
+          <div style="background:var(--green-light);border:1px solid var(--green);border-radius:8px;padding:10px;">
+            <span class="tag tag-green" style="font-size:0.7rem;">✅ 第1章</span>
+            <div style="font-size:0.78rem;margin-top:4px;">SQL/MySQL 安装与数据库创建</div>
+          </div>
+          <div style="background:var(--orange-light);border:1px solid var(--orange);border-radius:8px;padding:10px;">
+            <span class="tag tag-orange" style="font-size:0.7rem;">🟡 第2章</span>
+            <div style="font-size:0.78rem;margin-top:4px;">SELECT到BETWEEN（P7-P17待完成）</div>
+          </div>
+          <div style="background:var(--purple-light);border:1px solid var(--purple);border-radius:8px;padding:10px;">
+            <span class="tag tag-purple" style="font-size:0.7rem;">⬜ 第3-7章</span>
+            <div style="font-size:0.78rem;margin-top:4px;">JOIN · 聚合 · 子查询 · 函数</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk Control Learning -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="emoji">🛡️</span>风控学习路线</div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:0.78rem;">
+          <span class="tag tag-green">✅ 风控岗位认知</span>
+          <span class="tag tag-green">✅ 信贷报表体系前2章</span>
+          <span style="color:var(--text3);">→</span>
+          <span class="tag tag-orange">🟡 贷前/贷中/贷后流程</span>
+          <span style="color:var(--text3);">→</span>
+          <span class="tag tag-purple">⬜ 风控指标卡</span>
+          <span style="color:var(--text3);">→</span>
+          <span class="tag tag-purple">⬜ EDA + 模型</span>
+        </div>
+      </div>
+
+      <!-- Weekly Plan -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="emoji">📅</span>本周计划 (8/3 - 8/7)</div>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-date">8/3 周一 · 今天</div>
+            <div class="timeline-text"><strong>SQL 整合日</strong> — 复习第1-7章，SQL Cheat Sheet + 10条风控查询</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">8/4 周二</div>
+            <div class="timeline-text"><strong>项目启动</strong> — 选定信贷数据集，数据字典初版</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">8/5 周三</div>
+            <div class="timeline-text"><strong>数据质量与目标变量</strong> — 检查NULL/重复值，计算违约率</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">8/6 周四</div>
+            <div class="timeline-text"><strong>初步EDA</strong> — 5个关键变量的图表+业务发现</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">8/7 周五</div>
+            <div class="timeline-text"><strong>八月首周收尾</strong> — 项目README雏形 + 周度复盘</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px;"><span class="emoji">🔗</span>学习资源</div>
+        <div class="resource-card">
+          <div class="resource-icon" style="background:var(--coral-light);">📺</div>
+          <div class="resource-info">
+            <div class="resource-name">SQL 进阶教程（B站）</div>
+            <div class="resource-desc">史上最易懂SQL教程，第1-7章</div>
+            <div class="resource-link">bilibili.com/video/BV1UE41147KC</div>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-icon" style="background:var(--blue-light);">📖</div>
+          <div class="resource-info">
+            <div class="resource-name">风控学习手册</div>
+            <div class="resource-desc">信贷报表体系从0到1</div>
+            <div class="resource-link">本地文件</div>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-icon" style="background:var(--green-light);">🐍</div>
+          <div class="resource-info">
+            <div class="resource-name">Kaggle Give Me Some Credit</div>
+            <div class="resource-desc">信贷违约预测数据集</div>
+            <div class="resource-link">kaggle.com/c/GiveMeSomeCredit</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ENGLISH SECTION ==================== -->
+    <section class="section" id="section-english">
+      <div class="section-hero">
+        <h2>🗣️ 英语口语工作台</h2>
+        <p>每日15分钟口语打卡</p>
+      </div>
+
+      <!-- 四大板块卡片导航 -->
+      <div class="subnav-cards cols-4" id="english-nav-cards">
+        <div class="subnav-card sc-tasks active" onclick="switchEnglishTab('tasks')">
+          <span class="sc-emoji">📋</span><span class="sc-label">今日任务</span>
+        </div>
+        <div class="subnav-card sc-speaking" onclick="switchEnglishTab('speaking')">
+          <span class="sc-emoji">🎤</span><span class="sc-label">口语练习</span>
+        </div>
+        <div class="subnav-card sc-resources" onclick="switchEnglishTab('resources')">
+          <span class="sc-emoji">🎧</span><span class="sc-label">学习资源</span>
+        </div>
+        <div class="subnav-card sc-checkin" onclick="switchEnglishTab('checkin')">
+          <span class="sc-emoji">🔥</span><span class="sc-label">打卡记录</span>
+        </div>
+      </div>
+
+      <!-- Today's Tasks Panel -->
+      <div class="eng-panel active" id="english-tasks">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">📋</span>今日口语任务 · <span id="eng-task-date">8月5日</span></div>
+            <span class="tag tag-coral" id="eng-task-theme">What's in a footballer's brain?</span>
+          </div>
+          <div id="eng-tasks-content"></div>
+          <div style="margin-top:16px;text-align:center;">
+            <button class="btn btn-primary" id="eng-checkin-btn" onclick="doEnglishCheckin()" style="padding:12px 36px;font-size:0.95rem;">
+              ✅ 完成今日打卡
+            </button>
+            <div style="font-size:0.75rem;color:var(--text3);margin-top:8px;" id="eng-streak-msg"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Speaking Practice Panel -->
+      <div class="eng-panel" id="english-speaking">
+        <div class="card accent-left blue">
+          <div class="card-title" style="margin-bottom:12px;"><span class="emoji">🎤</span>Shadowing 跟读训练</div>
+          <div id="eng-shadowing-content"></div>
+          <div style="margin-top:12px;font-size:0.8rem;color:var(--text2);">
+            💡 <strong>跟读三步法：</strong>① 先听一遍理解大意 → ② 逐句暂停模仿语调 → ③ 不看文本再跟读一遍
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">📺</span>场景视频推荐 · Video Resources</div>
+            <span class="tag tag-purple" id="vid-theme-tag">今日主题</span>
+          </div>
+          <div id="vid-theme-content"></div>
+          <div style="margin-top:16px;font-size:0.8rem;font-weight:600;color:var(--text2);margin-bottom:10px;">📂 按场景分类的宝藏频道</div>
+          <div id="vid-channels-content"></div>
+        </div>
+      </div>
+      <div class="eng-panel" id="english-resources">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;"><span class="emoji">🎧</span>推荐播客 Podcasts</div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--coral-light);">🇬🇧</div>
+            <div class="resource-info">
+              <div class="resource-name">BBC Learning English Conversations</div>
+              <div class="resource-desc">BBC出品，Feifei老师主持，每集4分钟日常对话，难度温和适合通勤碎片时间</div>
+              <div class="resource-link"><a href="https://www.bbc.co.uk/learningenglish" target="_blank" style="color:var(--blue);">bbc.co.uk/learningenglish →</a></div>
+            </div>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--blue-light);">🇺🇸</div>
+            <div class="resource-info">
+              <div class="resource-name">All Ears English Podcast</div>
+              <div class="resource-desc">Lindsay & Michelle主持，美式idiom+跨文化沟通技巧，"Connection, not perfection"理念，每集15-20分钟</div>
+              <div class="resource-link"><a href="https://www.allearsenglish.com" target="_blank" style="color:var(--blue);">allearsenglish.com →</a></div>
+            </div>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--pink-light);">🇬🇧</div>
+            <div class="resource-info">
+              <div class="resource-name">Luke's English Podcast</div>
+              <div class="resource-desc">伦敦老师Luke Thompson主持，英式英语+文化幽默，平均时长111分钟，深度内容Apple 4.7分</div>
+              <div class="resource-link"><a href="https://teacherluke.co.uk" target="_blank" style="color:var(--blue);">teacherluke.co.uk →</a></div>
+            </div>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--purple-light);">🌍</div>
+            <div class="resource-info">
+              <div class="resource-name">Culips Everyday English Podcast</div>
+              <div class="resource-desc">自然对话形式练听力与口语，话题覆盖加拿大与全球文化，Apple 4.8分高口碑</div>
+              <div class="resource-link"><a href="https://www.culips.com" target="_blank" style="color:var(--blue);">culips.com →</a></div>
+            </div>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--green-light);">📻</div>
+            <div class="resource-info">
+              <div class="resource-name">VOA Learning English</div>
+              <div class="resource-desc">1959年开播的经典，新闻语速放慢1/3，核心词汇1500词，配有免费文本和 Words and Their Stories 习语系列，Apple 4.5分</div>
+              <div class="resource-link"><a href="https://learningenglish.voanews.com" target="_blank" style="color:var(--blue);">learningenglish.voanews.com →</a></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;"><span class="emoji">📺</span>YouTube 口语频道</div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--purple-light);">🎬</div>
+            <div class="resource-info">
+              <div class="resource-name">Rachel's English</div>
+              <div class="resource-desc">专业美式发音训练，逐句拆分讲解连读、弱读和语调</div>
+              <div class="resource-link"><a href="https://www.youtube.com/@rachelsenglish" target="_blank" style="color:var(--blue);">youtube.com/@rachelsenglish →</a></div>
+            </div>
+          </div>
+          <div class="resource-card">
+            <div class="resource-icon" style="background:var(--teal-light);">🎤</div>
+            <div class="resource-info">
+              <div class="resource-name">mmmEnglish (Emma)</div>
+              <div class="resource-desc">语法可视化教学 + Shadowing跟读练习，中级学习者宝藏频道</div>
+              <div class="resource-link"><a href="https://www.youtube.com/@mmmEnglish_emma" target="_blank" style="color:var(--blue);">youtube.com/@mmmEnglish_emma →</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Check-in Record Panel -->
+      <div class="eng-panel" id="english-checkin">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">🔥</span>打卡日历 · <span id="eng-cal-month">8月</span></div>
+            <span class="tag tag-coral" id="eng-cal-streak">连续 0 天</span>
+          </div>
+          <div class="checkin-streak" style="margin-bottom:8px;">当前连续打卡：<strong id="eng-streak-count">0</strong> 天 · 本月累计：<strong id="eng-month-count">0</strong> 天</div>
+          <div style="display:flex;gap:5px;margin-bottom:4px;font-size:0.65rem;color:var(--text3);">
+            <div style="width:calc(100%/7);text-align:center;">一</div><div style="width:calc(100%/7);text-align:center;">二</div>
+            <div style="width:calc(100%/7);text-align:center;">三</div><div style="width:calc(100%/7);text-align:center;">四</div>
+            <div style="width:calc(100%/7);text-align:center;">五</div><div style="width:calc(100%/7);text-align:center;">六</div>
+            <div style="width:calc(100%/7);text-align:center;">日</div>
+          </div>
+          <div class="checkin-grid" id="eng-checkin-grid"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;"><span class="emoji">📈</span>打卡历史</div>
+          <div id="eng-checkin-list">
+            <div style="color:var(--text3);text-align:center;padding:20px;">开始你的英语口语打卡之旅吧 🚀</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== GROWTH SECTION ==================== -->
+    <section class="section" id="section-growth">
+      <div class="section-hero">
+        <h2>🌱 个人成长区</h2>
+        <p>理财 · 新闻 · 阅读 · 记录</p>
+      </div>
+
+      <!-- 四大板块卡片导航 -->
+      <div class="subnav-cards cols-4" id="growth-nav-cards">
+        <div class="subnav-card sc-finance active" onclick="switchGrowthTab('finance')">
+          <span class="sc-emoji">💹</span>
+          <span class="sc-label">理财学习</span>
+        </div>
+        <div class="subnav-card sc-news" onclick="switchGrowthTab('news')">
+          <span class="sc-emoji">📰</span>
+          <span class="sc-label">新闻学习</span>
+        </div>
+        <div class="subnav-card sc-reading" onclick="switchGrowthTab('reading')">
+          <span class="sc-emoji">📖</span>
+          <span class="sc-label">书籍阅读</span>
+        </div>
+        <div class="subnav-card sc-notes" onclick="switchGrowthTab('notes')">
+          <span class="sc-emoji">📝</span>
+          <span class="sc-label">记录</span>
+        </div>
+      </div>
+
+      <!-- Finance Panel -->
+      <div class="growth-panel active" id="growth-finance">
+        <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="emoji">🇨🇳</span>A股市场 · 今日热点</div>
+          <span class="tag tag-coral">8月5日</span>
+        </div>
+        <a class="news-item" href="https://www.toutiao.com/article/7670324540886483462/" target="_blank">
+          <div class="news-title"><strong>AI应用等板块领涨，全市场超3600只个股上涨</strong> — 在海外巨头业绩超预期刺激下，AI应用端表现再度加强，AI营销、短剧等方向悉数爆发；传智教育晋级7连板，多股连板晋级 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">扬子晚报</div>
+        </a>
+        <a class="news-item" href="https://gu.qq.com/resources/shy/news/detail-v2/index.html?t=1#/index?_tentrees_trans=0&id=SN20260804140424a49d5bd4" target="_blank">
+          <div class="news-title"><strong>今日市场全线反攻，双创指数大涨，CRO概念领涨</strong> — 沪指涨0.33%报3822点，深成指涨3.25%，创业板指涨5.64%；算力硬件、半导体产业链反弹，两市成交额22287亿 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">腾讯自选股</div>
+        </a>
+        <a class="news-item" href="https://gu.qq.com/resources/shy/news/detail-v2/index.html?t=1#/index?_tentrees_trans=0&id=SN20260804151302972c8604" target="_blank">
+          <div class="news-title"><strong>CPO概念强势表现，存储三大原厂完成2027产能谈判</strong> — 英伟达宣告CPO步入量产；DRAM与HBM产能均提前售罄，2027年或成“存储最短缺一年” <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">腾讯自选股</div>
+        </a>
+        <a class="news-item" href="https://m.21jingji.com/timeline/f047429018544099983b995711d3dd13.html" target="_blank">
+          <div class="news-title"><strong>AI应用向实向深，商业化价值闭环正在形成</strong> — AI应用已下沉到AIGC、政企软件、AI教育、智能制造等场景，从技术验证迈入收入兑现阶段 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">21经济网</div>
+        </a>
+        <a class="news-item" href="https://gu.qq.com/resources/shy/news/detail-v2/index.html?t=1#/index?_tentrees_trans=0&id=SN20260804151302972c8604" target="_blank">
+          <div class="news-title"><strong>芯片IP保护再升级，《集成电路布图设计保护条例》修订发布</strong> — 自2001年颁布以来首次系统性修订，10月15日起施行；扩展保护范围、加大侵权赔偿 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">腾讯自选股</div>
+        </a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="emoji">🇺🇸</span>美股市场 · 今日热点</div>
+          <span class="tag tag-blue">8月5日</span>
+        </div>
+        <a class="news-item" href="https://new.qq.com/rain/a/20260805A02ZJC00" target="_blank">
+          <div class="news-title"><strong>美股三大指数集体收涨，道指、标普500均再创新高</strong> — 纳指涨2.59%，标普500涨1.79%，道指涨1.71%；费城半导体指数涨6.5%，光通信、存储板块集体上涨 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">腾讯新闻</div>
+        </a>
+        <a class="news-item" href="https://new.qq.com/rain/a/20260805A024DM00?refer=cp_1009" target="_blank">
+          <div class="news-title"><strong>道指大涨907点创新高，Palantir暴涨29%</strong> — Palantir Q2业绩大幅超预期，商业收入同比大增149%，CEO称表现“超凡脱俗”；超84%已公布业绩的标普成分股盈利高于预期 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">FX168</div>
+        </a>
+        <a class="news-item" href="https://so.html5.qq.com/page/real/search_news?docid=70000021_1166a7271ba78052" target="_blank">
+          <div class="news-title"><strong>SpaceX上市后首份财报：Q2收入78亿美元，同比增长92%</strong> — 调整后EBITDA为35亿美元，同比增长191%；马斯克称GROK 4.6预计下周发布 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">QQ早报</div>
+        </a>
+        <a class="news-item" href="https://so.html5.qq.com/page/real/search_news?docid=70000021_6936a7275e014052" target="_blank">
+          <div class="news-title"><strong>美伊霍尔木兹海峡谈判取得积极进展，国际油价重挫逾5%</strong> — WTI原油期货跌5.69%报75.77美元/桶，布伦特跌5.26%报79.36美元/桶；美国务卿称协议尚未最终敲定 <span class="news-link-icon">🔗</span></div>
+          <div class="news-source">经纬早班车</div>
+        </a>
+      </div>
+      </div>
+
+      <!-- News Panel -->
+      <div class="growth-panel" id="growth-news">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">🔥</span>今日新闻热点</div>
+            <span class="tag tag-orange">8月5日</span>
+          </div>
+          <a class="news-item" href="https://www.toutiao.com/article/7670324540886483462/" target="_blank">
+            <div class="news-title"><strong>🇨🇳 AI应用等板块领涨，全市场超3600只个股上涨</strong> — AI营销、短剧等方向悉数爆发，传智教育晋级7连板；美股AI硬件业绩超预期刺激A股AI应用端 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">扬子晚报</div>
+          </a>
+          <a class="news-item" href="https://gu.qq.com/resources/shy/news/detail-v2/index.html?t=1#/index?_tentrees_trans=0&id=SN20260804140424a49d5bd4" target="_blank">
+            <div class="news-title"><strong>🇨🇳 今日市场全线反攻，双创指数大涨，CRO概念领涨</strong> — 沪指涨0.33%报3822点，深成指涨3.25%，创业板指涨5.64%；两市成交额22287亿 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">腾讯自选股</div>
+          </a>
+          <a class="news-item" href="https://gu.qq.com/resources/shy/news/detail-v2/index.html?t=1#/index?_tentrees_trans=0&id=SN20260804151302972c8604" target="_blank">
+            <div class="news-title"><strong>🇨🇳 芯片IP保护再升级，《集成电路布图设计保护条例》修订发布</strong> — 自2001年颁布以来首次系统性修订，10月15日起施行；扩展保护范围、加大侵权赔偿 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">腾讯自选股</div>
+          </a>
+          <a class="news-item" href="https://news.163.com?method=viewpositions&positionid=26816/" target="_blank">
+            <div class="news-title"><strong>🇨🇳 DeepSeek-V4-Flash正式版API上线公测</strong> — 深度求索发布V4-Flash正式版，API公测启动 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">网易新闻</div>
+          </a>
+          <a class="news-item" href="https://cj.sina.com.cn/article/norm_detail?url=https%3A%2F%2Ffinance.sina.com.cn%2Fjjxw%2F2026-08-05%2Fdoc-inimffsr5294246.shtml&finpagefr=w_110" target="_blank">
+            <div class="news-title"><strong>🇨🇳 国内航线燃油附加费今起再次下调</strong> — 8月5日起国内航线燃油附加费下调，旅客出行成本降低 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">新浪财经</div>
+          </a>
+          <a class="news-item" href="https://new.qq.com/rain/a/20260805A024DM00?refer=cp_1009" target="_blank">
+            <div class="news-title"><strong>🇺🇸 道指/标普创历史新高，Palantir暴涨29%</strong> — 道指涨907点，标普500涨1.79%；Palantir商业收入同比大增149%，CEO称表现“超凡脱俗” <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">FX168</div>
+          </a>
+          <a class="news-item" href="https://so.html5.qq.com/page/real/search_news?docid=70000021_1166a7271ba78052" target="_blank">
+            <div class="news-title"><strong>🚀 SpaceX上市后首份财报：Q2收入78亿美元，同比增长92%</strong> — 调整后EBITDA为35亿美元，同比增长191%；马斯克称GROK 4.6预计下周发布 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">QQ早报</div>
+          </a>
+          <a class="news-item" href="https://so.html5.qq.com/page/real/search_news?docid=70000021_6936a7275e014052" target="_blank">
+            <div class="news-title"><strong>🛢️ 国际油价重挫逾5%，WTI跌至75.77美元/桶</strong> — 美伊谈判积极进展推动油价大跌；布伦特跌至79.36美元/桶，美国务卿称协议尚未最终敲定 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">经纬早班车</div>
+          </a>
+          <a class="news-item" href="https://finance.sina.cn/2026-08-04/detail-inimawmr4242151.d.html" target="_blank">
+            <div class="news-title"><strong>🏆 中国11岁少年30秒跳绳234个夺金，打破世界纪录</strong> — 长沙学生黄思行在2026亚洲跳绳锦标赛上打破世界纪录 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">新浪财经</div>
+          </a>
+          <a class="news-item" href="https://finance.sina.cn/2026-08-04/detail-inimawmr4242151.d.html" target="_blank">
+            <div class="news-title"><strong>🎂 大熊猫“丫丫”迎来26岁生日</strong> — 相当于人类近90岁高龄，回国后的第四个生日 <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">新浪财经</div>
+          </a>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">🌍</span>国际英语新闻 · English News</div>
+            <span class="tag tag-blue">August 5</span>
+          </div>
+          <a class="news-item" href="https://new.qq.com/rain/a/20260805A02ZJC00" target="_blank">
+            <div class="news-title"><strong>US stocks surge: Dow and S&P 500 hit record highs, Nasdaq jumps 2.59%</strong> — Google, Apple, Tesla, Microsoft rise over 1%; Amazon drops over 2% <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">Tencent News</div>
+          </a>
+          <a class="news-item" href="https://new.qq.com/rain/a/20260805A024DM00?refer=cp_1009" target="_blank">
+            <div class="news-title"><strong>Palantir soars 29% on strong earnings, commercial revenue up 149%</strong> — CEO Alex Karp calls quarter "transcendent"; sovereign AI demand growing rapidly <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">FX168</div>
+          </a>
+          <a class="news-item" href="https://so.html5.qq.com/page/real/search_news?docid=70000021_1166a7271ba78052" target="_blank">
+            <div class="news-title"><strong>SpaceX Q2 revenue surges 92% to $7.8B in first post-IPO report</strong> — Adjusted EBITDA hits $3.5B, up 191%; computing power to exceed 2GW by year-end <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">QQ早报</div>
+          </a>
+          <a class="news-item" href="https://so.html5.qq.com/page/real/search_news?docid=70000021_6936a7275e014052" target="_blank">
+            <div class="news-title"><strong>Oil prices plunge over 5% as US-Iran Strait of Hormuz talks progress</strong> — WTI crude falls to $75.77/barrel, Brent to $79.36; deal not yet finalized <span class="news-link-icon">🔗</span></div>
+            <div class="news-source">经纬早班车</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Reading Panel -->
+      <div class="growth-panel" id="growth-reading">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">📖</span>当前阅读</div>
+            <button class="btn btn-primary btn-sm" onclick="addBook()">+ 添加书籍</button>
+          </div>
+          <div id="book-list">
+            <div style="color:var(--text3);text-align:center;padding:20px;">还没有添加书籍，点击上方按钮添加</div>
+          </div>
+        </div>
+
+        <div class="card accent-left">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">💬</span>AI 阅读探讨</div>
+          </div>
+          <div class="chat-container" id="book-chat">
+            <div class="chat-msg ai">👋 你好！我是你的阅读伙伴。你可以和我讨论你正在读的书，分享你的想法和疑问，我会和你一起探讨。你想聊聊哪本书呢？</div>
+          </div>
+          <div class="chat-input-row">
+            <input class="input" id="book-chat-input" placeholder="说说你对这本书的看法..." onkeydown="if(event.key==='Enter')sendBookMessage()">
+            <button class="btn btn-primary btn-sm" onclick="sendBookMessage()">发送</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes Panel -->
+      <div class="growth-panel" id="growth-notes">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">📝</span>个人知识库</div>
+            <button class="btn btn-primary btn-sm" onclick="addNote()">+ 添加笔记</button>
+          </div>
+          <div id="notes-list">
+            <div style="color:var(--text3);text-align:center;padding:20px;">记录网上看到的好句子、书中的金句、有用的想法...</div>
+          </div>
+        </div>
+        <div id="note-form" style="display:none;">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:12px;">添加新笔记</div>
+            <input class="input" id="note-content" placeholder="输入你想记录的内容..." style="margin-bottom:8px;">
+            <input class="input" id="note-source" placeholder="来源（可选）：书名/网址/作者" style="margin-bottom:8px;">
+            <input class="input" id="note-tags" placeholder="标签（逗号分隔）：如 风控,SQL,人生" style="margin-bottom:12px;">
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-primary btn-sm" onclick="saveNote()">保存</button>
+              <button class="btn btn-outline btn-sm" onclick="cancelNote()">取消</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PLANNING SECTION ==================== -->
+    <section class="section" id="section-planning">
+      <div class="section-hero">
+        <h2>📋 个人计划</h2>
+        <p>完成记录 · 运动打卡 · 每日日志</p>
+      </div>
+
+      <!-- 三大板块卡片导航 -->
+      <div class="subnav-cards cols-3" id="planning-nav-cards">
+        <div class="subnav-card sc-done active" onclick="switchPlanningTab('done')">
+          <span class="sc-emoji">✅</span>
+          <span class="sc-label">记录完成</span>
+        </div>
+        <div class="subnav-card sc-exercise" onclick="switchPlanningTab('exercise')">
+          <span class="sc-emoji">🏃</span>
+          <span class="sc-label">运动计划</span>
+        </div>
+        <div class="subnav-card sc-journal" onclick="switchPlanningTab('journal')">
+          <span class="sc-emoji">📓</span>
+          <span class="sc-label">每日日志</span>
+        </div>
+      </div>
+
+      <!-- Done Panel -->
+      <div class="planning-panel active" id="planning-done">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">✅</span>今日完成事项</div>
+          </div>
+          <div id="done-list">
+            <div style="color:var(--text3);text-align:center;padding:20px;">今天完成了什么？不需要排得很满，记录真实的进步就好 🌿</div>
+          </div>
+        </div>
+        <!-- Done 记录已移至 Obsidian，此处只展示统计 -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-diary-count">1</div>
+            <div class="stat-label">本月日记天数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-mood-count">-</div>
+            <div class="stat-label">本月心情</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-exercise-count">0</div>
+            <div class="stat-label">本月运动天数</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exercise Panel -->
+      <div class="planning-panel" id="planning-exercise">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">🏃</span>8月运动打卡</div>
+            <span class="tag tag-green">目标: 12次</span>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+            <div style="display:flex;gap:4px;align-items:center;font-size:0.75rem;">
+              <div style="width:14px;height:14px;border-radius:3px;background:var(--bg);border:1px solid var(--border);"></div> 未运动
+              <div style="width:14px;height:14px;border-radius:3px;background:var(--green-light);border:1px solid var(--green);margin-left:8px;"></div> 已运动
+              <div style="width:14px;height:14px;border-radius:3px;border:2px solid var(--coral);box-shadow:0 0 0 3px var(--coral-light);margin-left:8px;"></div> 今天
+            </div>
+          </div>
+          <div style="display:flex;gap:5px;margin-bottom:4px;font-size:0.65rem;color:var(--text3);">
+            <div style="width:calc(100%/7);text-align:center;">一</div><div style="width:calc(100%/7);text-align:center;">二</div>
+            <div style="width:calc(100%/7);text-align:center;">三</div><div style="width:calc(100%/7);text-align:center;">四</div>
+            <div style="width:calc(100%/7);text-align:center;">五</div><div style="width:calc(100%/7);text-align:center;">六</div>
+            <div style="width:calc(100%/7);text-align:center;">日</div>
+          </div>
+          <div class="exercise-grid" id="exercise-grid"></div>
+        </div>
+
+        <!-- 运动记录来自 Obsidian 八月每日日志 -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;"><span class="emoji">💪</span>运动记录（同步自 Obsidian）</div>
+          <div id="exercise-list"><div style="color:var(--text3);padding:8px;font-size:0.85rem;">等待 Obsidian 同步…</div></div>
+        </div>
+      </div>
+
+      <!-- Journal Panel -->
+      <div class="planning-panel" id="planning-journal">
+        <div class="card">
+          <div class="card-header">
+          <div class="card-title"><span class="emoji">📓</span><span id="journal-title-date">今日日志</span></div>
+          <span class="tag tag-pink" id="journal-title-day">Day</span>
+          </div>
+          <!-- LifeTracker 全月热度图（来自 Obsidian 每日日志同步） -->
+          <div class="lifetracker-grid" id="lifetracker-grid"></div>
+          <!-- 今日叙事（来自 Obsidian） -->
+          <div id="journal-today" style="margin-top:16px;"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="emoji">📜</span>最近7天日志</div>
+          </div>
+          <div id="journal-list">
+            <div style="color:var(--text3);text-align:center;padding:20px;">日志将按日期自动保存和排序</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Nav (Mobile) -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <button class="bnav-item active" onclick="switchSection('study')" data-bnav="study">
+        <span class="bnav-icon">📚</span> 学习
+      </button>
+      <button class="bnav-item" onclick="switchSection('english')" data-bnav="english">
+        <span class="bnav-icon">🎙️</span> 英语
+      </button>
+      <button class="bnav-item" onclick="switchSection('growth')" data-bnav="growth">
+        <span class="bnav-icon">🌱</span> 成长
+      </button>
+      <button class="bnav-item" onclick="switchSection('planning')" data-bnav="planning">
+        <span class="bnav-icon">📋</span> 计划
+      </button>
+    </div>
+  </nav>
+</div>
+
+<!-- OBSIDIAN_PLACEHOLDER -->
+<script>
+// Obsidian 全月 LifeTracker（心情/事件/睡眠/消费/运动）— sync_daily_journal.py 自动注入
+const OBSIDIAN_LIFE_DATA = {"mood": ["😄", "😐", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️"], "events": ["💻", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️"], "sleep": ["🌞", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️"], "spending": ["🈚️", "🥤", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️", "◻️"], "movement": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]};
+
+// 从 Obsidian 同步的打卡日期（Python 脚本自动注入）
+const OBSIDIAN_CHECKINS = ["2026-08-01", "2026-08-02"];</script>
+<script>
+// 从 Obsidian 同步的今日日志（Python 脚本自动注入）
+const OBSIDIAN_JOURNAL_DATA = {"date": "2026-08-04", "mood": "◻️", "event": "", "why": "", "tags": "#仅留日记 / #故事候选 / #学习模式候选 / #工作模式候选 / #成长模式候选", "discover": ""};
+const OBSIDIAN_JOURNAL_HISTORY = [{"date": "2026-08-02", "mood": "😐", "event": "📍 练了英语新闻复述", "why": "", "tags": "#仅留日记 / #故事候选 / #学习模式候选 / #工作模式候选 / #成长模式候选", "discover": ""}, {"date": "2026-08-01", "mood": "😄", "event": "📍 在小石上班地方学习，练了英语新闻复述，完善了工作台", "why": "", "tags": "#仅留日记 #学习模式候选", "discover": ""}];</script>
+<script>
+// ========== DATA STORE ==========
+const STORE_KEY = 'lemonhui_workbench_v2';
+const STORE_VERSION = 10; // bump when store schema changes
+
+let store = JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || null;
+// 版本不匹配或首次初始化 → 用最新默认值
+if (!store || store._version !== STORE_VERSION) {
+  store = {
+    _version: STORE_VERSION,
+    books: [],
+    notes: [],
+    doneItems: [],
+    exercises: [{ type: '骑车', duration: 30, date: '2026-07-15' }],
+    journals: [],
+    engCheckins: ["2026-08-01", "2026-08-02"],
+    currentMood: '',
+    currentBookId: null
+  };
+  saveStore();
+}
+
+// 合并 Obsidian 同步的打卡记录
+OBSIDIAN_CHECKINS.forEach(d => {
+  if (!store.engCheckins.includes(d)) store.engCheckins.push(d);
+});
+store.engCheckins.sort();
+saveStore();
+
+// 合并 Obsidian 同步的日志历史（最近7天）
+if (typeof OBSIDIAN_JOURNAL_HISTORY !== 'undefined' && Array.isArray(OBSIDIAN_JOURNAL_HISTORY)) {
+  OBSIDIAN_JOURNAL_HISTORY.forEach(j => {
+    if (!j || !j.mood || j.mood === '\u25fb\ufe0f') return;
+    const exists = store.journals.find(x => x._obsidian && x.date === j.date);
+    if (!exists) {
+      store.journals = store.journals.filter(x => x.date !== j.date);
+      store.journals.unshift({
+        id: Date.now() + Math.random(),
+        date: j.date,
+        mood: j.mood || '\ud83d\ude10',
+        event: j.event || '',
+        why: j.why || '',
+        tags: j.tags || '',
+        discover: j.discover || '',
+        _obsidian: true
+      });
+    }
+  });
+  saveStore();
+}
+
+function saveStore() { localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
+
+// ========== MAIN SECTION SWITCHER ==========
+function switchSection(name) {
+  // 隐藏所有板块
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  // 显示目标板块
+  const target = document.getElementById('section-' + name);
+  if (target) target.classList.add('active');
+  // 更新侧边栏导航
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navBtn = document.querySelector('.nav-item[data-nav="' + name + '"]');
+  if (navBtn) navBtn.classList.add('active');
+  // 更新底部导航
+  document.querySelectorAll('.bnav-item').forEach(n => n.classList.remove('active'));
+  const bnavBtn = document.querySelector('.bnav-item[data-bnav="' + name + '"]');
+  if (bnavBtn) bnavBtn.classList.add('active');
+  // 切换到对应板块时刷新渲染
+  if (name === 'growth') { renderBooks(); renderNotes(); }
+  if (name === 'planning') { renderDoneItems(); renderExerciseGrid(); renderExerciseList(); renderLifeTracker(); renderJournalToday(); renderJournals(); }
+  if (name === 'english') { switchEnglishTab('tasks'); }
+}
+
+function switchGrowthTab(name) {
+  // 更新卡片
+  document.querySelectorAll('#growth-nav-cards .subnav-card').forEach(c => c.classList.remove('active'));
+  const activeCard = document.querySelector('#growth-nav-cards .sc-' + name);
+  if (activeCard) activeCard.classList.add('active');
+  // 更新面板
+  document.querySelectorAll('.growth-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('growth-' + name);
+  if (panel) panel.classList.add('active');
+  // 渲染
+  if (name === 'reading') renderBooks();
+  if (name === 'notes') renderNotes();
+}
+
+// ========== PLANNING TAB SWITCHER (卡片+面板联动) ==========
+function switchPlanningTab(name) {
+  // 更新卡片
+  document.querySelectorAll('#planning-nav-cards .subnav-card').forEach(c => c.classList.remove('active'));
+  const activeCard = document.querySelector('#planning-nav-cards .sc-' + name);
+  if (activeCard) activeCard.classList.add('active');
+  // 更新面板
+  document.querySelectorAll('.planning-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('planning-' + name);
+  if (panel) panel.classList.add('active');
+  // 渲染
+  if (name === 'exercise') { renderExerciseGrid(); renderExerciseList(); }
+  if (name === 'journal') { renderLifeTracker(); renderJournalToday(); renderJournals(); }
+  if (name === 'done') renderDoneItems();
+}
+
+// ========== TOAST ==========
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2000);
+}
+
+// ========== BOOKS ==========
+function addBook() {
+  const title = prompt('书名：');
+  if (!title) return;
+  const author = prompt('作者：');
+  store.books.push({ id: Date.now(), title, author: author || '未知', thoughts: [] });
+  saveStore(); renderBooks();
+}
+function deleteBook(id) {
+  if (!confirm('确定删除这本书？')) return;
+  store.books = store.books.filter(b => b.id !== id);
+  saveStore(); renderBooks();
+}
+function renderBooks() {
+  const c = document.getElementById('book-list');
+  if (!store.books.length) {
+    c.innerHTML = '<div style="color:var(--text3);text-align:center;padding:20px;">还没有添加书籍，点击上方按钮添加</div>';
+    return;
+  }
+  c.innerHTML = store.books.map(b => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-card2);border-radius:8px;margin-bottom:8px;border:1px solid var(--border);">
+      <div style="flex:1;cursor:pointer;" onclick="selectBook(${b.id})">
+        <div style="font-weight:600;font-size:0.9rem;">📖 ${b.title}</div>
+        <div style="font-size:0.78rem;color:var(--text2);">${b.author}</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-outline btn-sm" onclick="selectBook(${b.id})">💬 讨论</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteBook(${b.id})">✕</button>
+      </div>
+    </div>`).join('');
+}
+function selectBook(id) {
+  store.currentBookId = id;
+  const book = store.books.find(b => b.id === id);
+  const chat = document.getElementById('book-chat');
+  chat.innerHTML = '<div class="chat-msg ai">📖 我们正在讨论《' + book.title + '》—— ' + book.author + '<br>你想聊这本书的哪些方面？情节、观点、还是你的感受？</div>';
+  document.getElementById('book-chat-input').focus();
+}
+function sendBookMessage() {
+  const input = document.getElementById('book-chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const chat = document.getElementById('book-chat');
+  chat.innerHTML += '<div class="chat-msg user">' + msg + '</div>';
+  const book = store.books.find(b => b.id === store.currentBookId);
+  const bn = book ? '《' + book.title + '》' : '这本书';
+  let reply = '';
+  const l = msg.toLowerCase();
+  if (l.includes('观点')||l.includes('看法')||l.includes('觉得')) reply = '关于' + bn + '，你提出的这个观点很有意思。能否多说一点：是什么情节或段落让你产生了这样的想法？我想更深入地理解你的视角。';
+  else if (l.includes('为什么')||l.includes('怎么')) reply = '这是个好问题。关于' + bn + '，作者在这里的处理确实值得深思。你认为作者的意图是什么？';
+  else if (l.includes('同意')||l.includes('不同意')) reply = '很高兴你有自己的判断！在' + bn + '中，这种"不同意"的时刻其实是最有价值的。具体是哪个观点让你不认同？';
+  else {
+    const r = ['关于' + bn + '，你这个想法很独特。能从你的专业背景（统计+金融）来解读一下吗？',
+      '这个问题让我想到' + bn + '中的一个关键主题。你觉得作者在这一点上说服你了吗？',
+      '有意思的观察！如果你来写，你会怎么处理这一段？',
+      bn + '的这部分确实耐人寻味。它让你联想到现实生活中的什么经历吗？'];
+    reply = r[Math.floor(Math.random()*r.length)];
+  }
+  chat.innerHTML += '<div class="chat-msg ai">' + reply + '</div>';
+  chat.scrollTop = chat.scrollHeight;
+  input.value = '';
+}
+
+// ========== NOTES ==========
+function addNote() { document.getElementById('note-form').style.display = 'block'; }
+function cancelNote() {
+  document.getElementById('note-form').style.display = 'none';
+  document.getElementById('note-content').value = '';
+  document.getElementById('note-source').value = '';
+  document.getElementById('note-tags').value = '';
+}
+function saveNote() {
+  const content = document.getElementById('note-content').value.trim();
+  if (!content) return;
+  store.notes.unshift({
+    id: Date.now(), content,
+    source: document.getElementById('note-source').value.trim(),
+    tags: document.getElementById('note-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    date: new Date().toISOString().split('T')[0]
+  });
+  saveStore(); cancelNote(); renderNotes();
+  // Offer to save to phone notes
+  setTimeout(() => shareToNotes(content, '读书笔记'), 400);
+}
+function deleteNote(id) { store.notes = store.notes.filter(n => n.id !== id); saveStore(); renderNotes(); }
+function renderNotes() {
+  const c = document.getElementById('notes-list');
+  if (!store.notes.length) {
+    c.innerHTML = '<div style="color:var(--text3);text-align:center;padding:20px;">记录网上看到的好句子、书中的金句、有用的想法...</div>';
+    return;
+  }
+  c.innerHTML = store.notes.map(n => `
+    <div style="padding:14px;background:var(--bg-card2);border-radius:8px;margin-bottom:8px;border:1px solid var(--border);">
+      <div style="font-size:0.9rem;line-height:1.7;margin-bottom:8px;">${n.content}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+        ${n.source ? '<span style="font-size:0.72rem;color:var(--text3);">📎 ' + n.source + '</span>' : ''}
+        ${n.tags.map(t => '<span class="tag tag-purple" style="font-size:0.65rem;">' + t + '</span>').join('')}
+        <span style="font-size:0.7rem;color:var(--text3);margin-left:auto;">${n.date}</span>
+        <button class="btn btn-outline btn-sm" onclick="shareToNotes('${n.content.replace(/'/g, "\\'")}', '读书笔记')" style="font-size:0.65rem;padding:2px 8px;">📱</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteNote(' + n.id + ')" style="font-size:0.65rem;padding:2px 8px;">删除</button>
+      </div>
+    </div>`).join('');
+}
+
+// ========== DONE ITEMS (Obsidian 只读展示) ==========
+function renderDoneItems() {
+  const c = document.getElementById('done-list');
+  // 从 Obsidian 今日日志提取完成事项
+  const j = OBSIDIAN_JOURNAL_DATA || {};
+  const items = [];
+  if (j.mood && j.mood !== '◻️') items.push({ emoji: j.mood, text: j.event || '今日记录已同步' });
+  if (OBSIDIAN_LIFE_DATA && OBSIDIAN_LIFE_DATA.movement) {
+    const today = new Date().getDate();
+    if (OBSIDIAN_LIFE_DATA.movement[today - 1]) items.push({ emoji: '💪', text: '今日运动已完成' });
+  }
+  if (store.engCheckins && store.engCheckins.includes(new Date().toISOString().split('T')[0])) {
+    items.push({ emoji: '🎙️', text: '今日英语打卡已完成' });
+  }
+
+  if (!items.length) {
+    c.innerHTML = '<div style="color:var(--text3);text-align:center;padding:20px;">在 Obsidian 中记录你的每一天 · 自动同步到工作台 🌿</div>';
+  } else {
+    c.innerHTML = items.map(d => `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-card2);border-radius:8px;margin-bottom:6px;border:1px solid var(--border);">
+        <span>${d.emoji}</span><span style="flex:1;font-size:0.9rem;">${d.text}</span>
+        <span class="tag tag-green" style="font-size:0.65rem;">Obsidian</span>
+      </div>`).join('');
+  }
+
+  // 更新统计卡片（数据来自 Obsidian）
+  const diaryDays = OBSIDIAN_LIFE_DATA && OBSIDIAN_LIFE_DATA.mood
+    ? OBSIDIAN_LIFE_DATA.mood.filter(m => m && m !== '◻️').length : 0;
+  const exerciseDays = OBSIDIAN_LIFE_DATA && OBSIDIAN_LIFE_DATA.movement
+    ? OBSIDIAN_LIFE_DATA.movement.filter(m => m === true).length : 0;
+  const moodEmoji = (OBSIDIAN_JOURNAL_DATA && OBSIDIAN_JOURNAL_DATA.mood && OBSIDIAN_JOURNAL_DATA.mood !== '◻️')
+    ? OBSIDIAN_JOURNAL_DATA.mood : '-';
+
+  const elDiary = document.getElementById('stat-diary-count');
+  const elMood = document.getElementById('stat-mood-count');
+  const elExercise = document.getElementById('stat-exercise-count');
+  if (elDiary) elDiary.textContent = diaryDays;
+  if (elMood) elMood.textContent = moodEmoji;
+  if (elExercise) elExercise.textContent = exerciseDays;
+}
+
+// ========== EXERCISE ==========
+// 数据来源：OBSIDIAN_LIFE_DATA.movement（Obsidian 八月每日日志 → 运动 tracker）
+function renderExerciseGrid() {
+  const grid = document.getElementById('exercise-grid');
+  if (!grid) return;
+  const firstDay = new Date(2026, 7, 1).getDay(); // Aug 2026: 6=Saturday
+  const startDay = firstDay === 0 ? 6 : firstDay - 1; // Mon-start offset
+  const movement = (OBSIDIAN_LIFE_DATA && OBSIDIAN_LIFE_DATA.movement) || [];
+  const today = new Date().getDate();
+  const now = new Date();
+  const isAugust = now.getFullYear() === 2026 && now.getMonth() === 7;
+  let html = '';
+  for (let i = 0; i < startDay; i++) html += '<div class="exercise-day" style="background:transparent;border:none;"></div>';
+  for (let d = 1; d <= 31; d++) {
+    const done = movement[d-1] === true;
+    const isToday = isAugust && d === today;
+    const cls = (done ? ' done' : '') + (isToday ? ' today' : '');
+    html += '<div class="exercise-day' + cls + '" title="8月' + d + '日' + (done ? ' ✅' : '') + '">' + d + '</div>';
+  }
+  grid.innerHTML = html;
+}
+function renderExerciseList() {
+  const c = document.getElementById('exercise-list');
+  if (!c) return;
+  const movement = (OBSIDIAN_LIFE_DATA && OBSIDIAN_LIFE_DATA.movement) || [];
+  const doneDays = [];
+  for (let i = 0; i < 31; i++) {
+    if (movement[i]) doneDays.push('2026-08-' + String(i+1).padStart(2,'0'));
+  }
+  if (!doneDays.length) { c.innerHTML = '<div style="color:var(--text3);padding:8px;font-size:0.85rem;">本月暂无运动记录 · 在 Obsidian 八月日志中标记 ✅</div>'; return; }
+  c.innerHTML = doneDays.map(d => '<div style="padding:6px 8px;font-size:0.85rem;border-bottom:1px solid var(--border);">' + d + ' · 💪 已完成运动</div>').join('');
+}
+
+// ========== LIFE TRACKER ==========
+function renderLifeTracker() {
+  const c = document.getElementById('lifetracker-grid');
+  if (!c || !OBSIDIAN_LIFE_DATA || !OBSIDIAN_LIFE_DATA.mood.length) return;
+  const titles = [
+    { key:'mood', label:'🌤️ 心情', emojis:['😔','😐','😊','😄'] },
+    { key:'events', label:'🧩 事件', emojis:['◻️'] },
+    { key:'sleep', label:'💤 睡眠', emojis:['😵','😴','✨'] },
+    { key:'spending', label:'💰 消费', emojis:['🈚️','🟩','🟨','🟥'] },
+  ];
+  let html = '';
+  for (const t of titles) {
+    const data = OBSIDIAN_LIFE_DATA[t.key] || [];
+    // Build 7-col grid rows
+    let rows = '';
+    for (let r = 0; r < 5; r++) {
+      let rowCells = '';
+      for (let col = 0; col < 7; col++) {
+        const idx = r * 7 + col;
+        const v = idx < data.length ? data[idx] : '';
+        rowCells += '<span class="lt-cell">' + (v || '·') + '</span>';
+      }
+      rows += '<div class="lt-row">' + rowCells + '</div>';
+    }
+    html += '<div class="lt-card"><div class="lt-title">' + t.label + '</div><div class="lt-month">8月</div><div class="lt-heatmap">' + rows + '</div><div class="lt-scale">obsidian 同步</div></div>';
+  }
+  c.innerHTML = html;
+}
+
+// 今日叙事
+function renderJournalToday() {
+  // 动态更新标题
+  const j = OBSIDIAN_JOURNAL_DATA || {};
+  const titleEl = document.getElementById('journal-title-date');
+  const dayEl = document.getElementById('journal-title-day');
+  if (j.date) {
+    const d = new Date(j.date);
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    if (titleEl) titleEl.textContent = '今日日志 · ' + month + '月' + day + '日';
+    if (dayEl) dayEl.textContent = 'Day ' + day;
+  }
+
+  const c = document.getElementById('journal-today');
+  if (!c || !j.mood || j.mood === '◻️') return;
+  let html = '<div class="card" style="margin-bottom:0;"><div class="card-title">📓 ' + j.date + ' · ' + j.mood + '</div>';
+  if (j.event) html += '<p style="font-size:0.9rem;color:var(--text);white-space:pre-wrap;">' + j.event + '</p>';
+  if (j.why) html += '<p style="font-size:0.85rem;color:var(--text2);margin-top:6px;">💭 ' + j.why + '</p>';
+  html += '</div>';
+  c.innerHTML = html;
+}
+
+// 重写 renderJournals：展示最近7天 Obsidian 日志历史
+function renderJournals() {
+  const c = document.getElementById('journal-list');
+  if (!c) return;
+
+  // 从 OBSIDIAN_JOURNAL_HISTORY 构建历史条目
+  let history = [];
+  if (typeof OBSIDIAN_JOURNAL_HISTORY !== 'undefined' && Array.isArray(OBSIDIAN_JOURNAL_HISTORY)) {
+    history = OBSIDIAN_JOURNAL_HISTORY.filter(j => j && j.mood && j.mood !== '\u25fb\ufe0f');
+  }
+
+  if (!history.length) {
+    c.innerHTML = '<div style="color:var(--text3);text-align:center;padding:20px;font-size:0.85rem;">日志从 Obsidian 每日同步 · 安心记录 ✨</div>';
+    return;
+  }
+
+  // 按日期倒序排列
+  history.sort((a, b) => b.date.localeCompare(a.date));
+
+  c.innerHTML = history.map(j => {
+    const d = new Date(j.date);
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    const weekday = ['日','一','二','三','四','五','六'][d.getDay()];
+
+    let html = '<div style="padding:12px 0;border-bottom:1px solid var(--border);">' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">' +
+      '<span style="font-size:1.4rem;flex-shrink:0;">' + (j.mood || '') + '</span>' +
+      '<div style="flex:1;">' +
+      '<span style="font-weight:600;font-size:0.9rem;">' + month + '月' + day + '日</span>' +
+      '<span style="font-size:0.75rem;color:var(--text3);margin-left:6px;">周' + weekday + '</span>' +
+      '</div>' +
+      '<span style="font-size:0.65rem;background:var(--purple-light);color:var(--purple);padding:2px 6px;border-radius:4px;">obsidian</span>' +
+      '</div>';
+
+    if (j.event) {
+      html += '<div style="font-size:0.82rem;color:var(--text);white-space:pre-wrap;line-height:1.5;margin-bottom:4px;">' + j.event + '</div>';
+    }
+    if (j.why) {
+      html += '<div style="font-size:0.78rem;color:var(--text2);line-height:1.4;">\ud83d\udcad ' + j.why + '</div>';
+    }
+    if (j.discover) {
+      html += '<div style="font-size:0.78rem;color:var(--text2);line-height:1.4;margin-top:2px;">\ud83d\udd0e ' + j.discover + '</div>';
+    }
+    if (j.tags) {
+      const tags = j.tags.split('/').map(t => t.trim()).filter(t => t && !t.startsWith('#仅'));
+      if (tags.length) {
+        html += '<div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:4px;">' +
+          tags.map(t => '<span style="font-size:0.65rem;background:var(--bg);color:var(--text3);padding:1px 6px;border-radius:8px;">' + t + '</span>').join('') +
+          '</div>';
+      }
+    }
+    html += '</div>';
+    return html;
+  }).join('');
+}
+
+// ========== SHARE TO PHONE NOTES / MEMO ==========
+function shareToNotes(content, type) {
+  const date = new Date().toLocaleDateString('zh-CN');
+  const text = `【${type}】${date}\n\n${content}\n\n--- 来自 Lemonhui 个人工作台`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: `${type} · ${date}`,
+      text: text
+    }).then(() => {
+      showToast('📱 请选择「备忘录」保存');
+    }).catch(() => {
+      // User cancelled or share not available - fallback to copy
+      copyToClipboard(text);
+    });
+  } else {
+    copyToClipboard(text);
+  }
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('📋 已复制到剪贴板，可粘贴到备忘录');
+    });
+  } else {
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('📋 已复制，请打开备忘录粘贴');
+  }
+}
+
+// ========== ENGLISH LEARNING ==========
+// --- TTS (Text-to-Speech) via Web Speech API ---
+let ttsRate = 0.9;
+let ttsLang = 'en-US';
+let ttsSpeakingEl = null;
+
+function speakText(text, btnEl) {
+  if (!window.speechSynthesis) { showToast('当前浏览器不支持语音朗读'); return; }
+  window.speechSynthesis.cancel();
+  // clear previous active state
+  if (ttsSpeakingEl) { ttsSpeakingEl.classList.remove('speaking'); ttsSpeakingEl = null; }
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = ttsLang;
+  u.rate = ttsRate;
+  const voices = window.speechSynthesis.getVoices();
+  const v = voices.find(v => v.lang === ttsLang) || voices.find(v => v.lang && v.lang.startsWith('en'));
+  if (v) u.voice = v;
+  u.onend = function() { if (btnEl) { btnEl.classList.remove('speaking'); } ttsSpeakingEl = null; };
+  u.onerror = function() { if (btnEl) { btnEl.classList.remove('speaking'); } ttsSpeakingEl = null; };
+  if (btnEl) { btnEl.classList.add('speaking'); ttsSpeakingEl = btnEl; }
+  window.speechSynthesis.speak(u);
+}
+
+function stopTTS() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  if (ttsSpeakingEl) { ttsSpeakingEl.classList.remove('speaking'); ttsSpeakingEl = null; }
+}
+
+function speakDialogueAll() {
+  const d = getTodayEngContent();
+  if (!d || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  if (ttsSpeakingEl) { ttsSpeakingEl.classList.remove('speaking'); ttsSpeakingEl = null; }
+  d.dialogue.forEach((line, i) => {
+    const u = new SpeechSynthesisUtterance(line.t);
+    u.lang = ttsLang;
+    u.rate = ttsRate;
+    const voices = window.speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang === ttsLang) || voices.find(v => v.lang && v.lang.startsWith('en'));
+    if (v) u.voice = v;
+    window.speechSynthesis.speak(u);
+  });
+}
+
+// 30-day rotating daily spoken English curriculum
+const ENG_CURRICULUM = [
+  {theme:"日常问候",phrase:"Long time no see! How have you been?",phraseZh:"好久不见！你最近怎么样？",phraseUse:"偶遇熟人时替代 \"How are you?\"，更自然",dialogue:[{r:"A",t:"Hey! Long time no see! How have you been?"},{r:"B",t:"I know, right? I've been pretty busy with work. What about you?"},{r:"A",t:"Same here. Just trying to keep up with everything."},{r:"B",t:"We should grab coffee sometime and catch up properly."}],vocab:[["catch up","叙旧，聊聊近况"],["keep up with","跟上，应付"],["grab coffee","喝杯咖啡（非正式邀约）"],["pretty busy","挺忙的"],["same here","我也是"]],shadow:"Long time no see! How have you been? I know, right? We should grab coffee sometime and catch up properly."},
+  {theme:"点餐场景",phrase:"I'll have the grilled chicken, please. Could I get that with a side salad?",phraseZh:"我要烤鸡，可以配一份沙拉吗？",phraseUse:"餐厅点餐礼貌表达，比 \"I want...\" 更地道",dialogue:[{r:"A",t:"Are you ready to order?"},{r:"B",t:"Yes, I'll have the grilled chicken, please. Could I get that with a side salad?"},{r:"A",t:"Sure. Anything to drink?"},{r:"B",t:"Just water for now, thanks."},{r:"A",t:"Coming right up!"}],vocab:[["side salad","配菜沙拉"],["coming right up","马上就来"],["anything to drink","喝点什么"],["ready to order","可以点餐了"]],shadow:"I'll have the grilled chicken, please. Could I get that with a side salad? Just water for now, thanks."},
+  {theme:"问路指路",phrase:"Excuse me, could you tell me how to get to the nearest subway station?",phraseZh:"请问最近的地铁站怎么走？",phraseUse:"旅行必备句，比 \"Where is...\" 更礼貌",dialogue:[{r:"A",t:"Excuse me, could you tell me how to get to the nearest subway station?"},{r:"B",t:"Sure! Go straight for two blocks, then turn right at the traffic light."},{r:"A",t:"Two blocks and a right turn. Got it. How far is it?"},{r:"B",t:"About a 5-minute walk. You can't miss it."},{r:"A",t:"Thanks so much! Have a good one!"}],vocab:[["go straight","直走"],["traffic light","红绿灯"],["you can't miss it","你不会错过的"],["have a good one","祝你有美好的一天"],["got it","明白了"]],shadow:"Excuse me, could you tell me how to get to the nearest subway station? Go straight for two blocks, then turn right at the traffic light."},
+  {theme:"The Enhanced Games",phrase:"It's fair to say this is one of the most divisive events the world of sport has seen for a long time.",phraseZh:"公平地说，这是体育界长期以来最具争议的事件之一。",phraseUse:"BBC 6 Minute English 中用于表达观点的地道句型，先肯定再陈述",dialogue:[{r:"A",t:"Would you watch a sport if you knew the athletes had taken drugs?"},{r:"B",t:"I really don't think that's fair. All athletes should start from the same level."},{r:"A",t:"But in The Enhanced Games, doping is allowed under medical supervision."},{r:"B",t:"It's fair to say this is one of the most divisive events in sport. Critics say it crosses an ethical line."}],vocab:[["doping","使用违禁药物/兴奋剂"],["divisive","引起分歧的"],["cross the line","越界/做得过分"],["normalise","使正常化/使习以为常"],["set an example","树立榜样"],["fair to say","公平地说"]],shadow:"It's fair to say this is one of the most divisive events the world of sport has seen. Critics say it crosses an ethical line and risks normalising doping."},
+  {theme:"约会闲聊",phrase:"So what do you do for fun when you're not working?",phraseZh:"你不工作的时候喜欢做什么？",phraseUse:"打破尴尬的万能社交句，比 \"What's your hobby?\" 更自然",dialogue:[{r:"A",t:"So what do you do for fun when you're not working?"},{r:"B",t:"I've been getting into hiking lately. There's this great trail about an hour from here."},{r:"A",t:"Oh nice! I've been meaning to do more outdoor stuff. Maybe I should check it out."},{r:"B",t:"You totally should! I could show you around if you want."}],vocab:[["get into","开始喜欢/投入"],["I've been meaning to","我一直想..."],["check it out","去看看"],["show you around","带你转转"],["outdoor stuff","户外活动"]],shadow:"So what do you do for fun when you're not working? I've been getting into hiking lately. I've been meaning to do more outdoor stuff."},
+  {theme:"表达观点",phrase:"I see where you're coming from, but I have a slightly different take on that.",phraseZh:"我理解你的出发点，但我有一点不同的看法。",phraseUse:"礼貌反驳的金句，先肯定再转折，职场必备",dialogue:[{r:"A",t:"I think we should launch the product next month. The market is ready."},{r:"B",t:"I see where you're coming from, but I have a slightly different take on that."},{r:"A",t:"Go on. What's your thinking?"},{r:"B",t:"I feel like waiting till Q4 would give us more time to refine the user experience."}],vocab:[["take on that","对...的看法"],["go on","继续说"],["refine","优化，打磨"],["user experience","用户体验"],["launch","发布"]],shadow:"I see where you're coming from, but I have a slightly different take on that. I feel like waiting till Q4 would give us more time."},
+  {theme:"天气闲聊",phrase:"It's supposed to clear up later this afternoon, fingers crossed!",phraseZh:"据说下午会放晴，但愿如此！",phraseUse:"Fingers crossed 是英美人挂在嘴边的口头禅，意思是祈求好运/但愿如此",dialogue:[{r:"A",t:"Ugh, this rain just won't let up, will it?"},{r:"B",t:"Tell me about it. But it's supposed to clear up later this afternoon, fingers crossed!"},{r:"A",t:"I hope so. I've got plans to meet some friends outdoors."},{r:"B",t:"The forecast says sunny by 3. You should be fine."}],vocab:[["clear up","放晴"],["fingers crossed","但愿如此/祈求好运"],["let up","（雨）变小，停止"],["tell me about it","谁说不是呢（表赞同）"],["forecast","天气预报"]],shadow:"It's supposed to clear up later this afternoon, fingers crossed! The forecast says sunny by 3, you should be fine."},
+  {theme:"表达感谢",phrase:"I really appreciate you going out of your way to help me with this.",phraseZh:"真的很感谢你特地花时间帮我这个忙。",phraseUse:"比 \"Thank you\" 更有诚意，适合职场和正式场合",dialogue:[{r:"A",t:"I really appreciate you going out of your way to help me with this."},{r:"B",t:"No worries at all. I know how stressful deadlines can be."},{r:"A",t:"Seriously, I owe you one. Let me buy you lunch."},{r:"B",t:"Ha, you don't have to. But I won't say no to that."}],vocab:[["go out of your way","特地/额外费心做某事"],["owe you one","欠你一个人情"],["no worries","别客气"],["stressful","压力大的"],["say no to","拒绝"]],shadow:"I really appreciate you going out of your way to help me. Seriously, I owe you one."},
+  {theme:"面试场景",phrase:"What really drew me to this role is the opportunity to work on projects that have real impact.",phraseZh:"真正吸引我的是能参与真正有影响力的项目。",phraseUse:"面试回答 Why us 的万能模板句",dialogue:[{r:"A",t:"So what made you interested in this position?"},{r:"B",t:"What really drew me to this role is the opportunity to work on projects that have real impact."},{r:"A",t:"Interesting. Can you give an example of what that means to you?"},{r:"B",t:"Sure. In my last role, I helped reduce processing time by 30%. I'd love to bring that kind of thinking here."}],vocab:[["drew me to","吸引我"],["real impact","真正的影响力"],["bring...thinking","带来...思路"],["processing time","处理时间"]],shadow:"What really drew me to this role is the opportunity to work on projects that have real impact. I'd love to bring that kind of thinking here."},
+  {theme:"电话沟通",phrase:"Hi, this is [Name] calling. I'm just following up on the email I sent earlier this week.",phraseZh:"你好我是[名字]，想跟进一下我本周早些时候发的邮件。",phraseUse:"商务电话开场白，just 弱化语气显得不咄咄逼人",dialogue:[{r:"A",t:"Hi, this is Alex calling. I'm just following up on the email I sent earlier this week."},{r:"B",t:"Oh yes, Alex! Thanks for reaching out. I actually reviewed it yesterday."},{r:"A",t:"Great! Do you have a few minutes to discuss it now?"},{r:"B",t:"Actually, I'm about to head into a meeting. Can I call you back in an hour?"},{r:"A",t:"Of course, no rush. Talk to you then!"}],vocab:[["follow up on","跟进"],["reach out","联系"],["about to","即将要"],["no rush","不急"],["head into","进入（会议等）"]],shadow:"Hi, this is Alex calling. I'm just following up on the email I sent earlier. Could we find a time to discuss?"},
+  {theme:"道歉回应",phrase:"No hard feelings. These things happen. Let's just focus on moving forward.",phraseZh:"没关系，这种事难免。我们往前看吧。",phraseUse:"被道歉时表现大度的高级回应",dialogue:[{r:"A",t:"I'm so sorry I missed the deadline. I completely dropped the ball on this one."},{r:"B",t:"No hard feelings. These things happen. Let's just focus on moving forward."},{r:"A",t:"Thanks for being so understanding. What's the next step?"},{r:"B",t:"Let's regroup tomorrow morning and come up with a revised timeline."}],vocab:[["no hard feelings","不记仇，没关系"],["these things happen","这种事难免"],["drop the ball","搞砸/失误"],["regroup","重新汇合/重整思路"],["revised timeline","修订后的时间表"]],shadow:"No hard feelings. These things happen. Let's just focus on moving forward. Let's regroup and come up with a plan."},
+  {theme:"旅行问询",phrase:"I was wondering if you could recommend any hidden gems around here that most tourists miss.",phraseZh:"请问有没有什么游客不太知道的隐藏好去处？",phraseUse:"旅行中问当地人宝藏景点的完美说法",dialogue:[{r:"A",t:"I was wondering if you could recommend any hidden gems around here that most tourists miss."},{r:"B",t:"Actually, yes! There's this amazing little cafe tucked away in a back alley. Best coffee in town."},{r:"A",t:"That sounds exactly like what I'm looking for! How do I get there?"},{r:"B",t:"Walk past the main square, take the second left, and you'll see a tiny sign. Trust me, it's worth it."}],vocab:[["hidden gem","隐藏的宝藏/好去处"],["tucked away","藏在..."],["back alley","小巷"],["worth it","值得的"],["tiny","很小的"]],shadow:"I was wondering if you could recommend any hidden gems around here. There's this amazing little cafe tucked away in a back alley."},
+  {theme:"邀约拒绝",phrase:"That sounds lovely, but I'm going to have to take a rain check this time.",phraseZh:"听起来很棒，不过这次我得改天再约了。",phraseUse:"礼貌拒绝邀请，take a rain check 是固定表达",dialogue:[{r:"A",t:"We're having a small get-together at my place this Saturday. You should come!"},{r:"B",t:"That sounds lovely, but I'm going to have to take a rain check this time."},{r:"A",t:"Ah, too bad! Everything okay?"},{r:"B",t:"Yeah, just swamped with this project. Rain check for sure though!"}],vocab:[["take a rain check","改天再约"],["get-together","聚会"],["swamped","忙得焦头烂额"],["for sure","肯定的"]],shadow:"That sounds lovely, but I'm going to have to take a rain check this time. I'm just swamped with this project."},
+  {theme:"表达困惑",phrase:"I'm not quite following. Could you walk me through that one more time?",phraseZh:"我没太跟上，能再给我讲一遍吗？",phraseUse:"没听懂时的优雅求救，比 What 礼貌100倍",dialogue:[{r:"A",t:"So the algorithm basically tokenizes the input and runs it through three layers of processing."},{r:"B",t:"Sorry, I'm not quite following. Could you walk me through that one more time?"},{r:"A",t:"Of course! Let me break it down step by step..."},{r:"B",t:"Thanks, that would really help. I learn better with examples."}],vocab:[["not quite following","没太跟上"],["walk through","逐步讲解"],["break it down","拆解说明"],["step by step","一步步"],["tokenize","分词（技术术语）"]],shadow:"I'm not quite following. Could you walk me through that one more time? Let me break it down step by step."},
+  {theme:"健身房",phrase:"Do you mind if I work in with you? I'll only need a couple of sets.",phraseZh:"介意我跟你轮流用吗？我只需要两组。",phraseUse:"健身房共用器械的万能句型",dialogue:[{r:"A",t:"Hey, do you mind if I work in with you? I'll only need a couple of sets."},{r:"B",t:"No problem at all! I've got two more sets anyway."},{r:"A",t:"Perfect timing then. Thanks, I appreciate it."},{r:"B",t:"Sure thing. How much weight do you need on there?"}],vocab:[["work in with","轮换使用"],["a couple of","几个/两三个"],["no problem at all","完全没问题"],["sure thing","当然"],["perfect timing","时机正好"]],shadow:"Do you mind if I work in with you? I'll only need a couple of sets. No problem at all!"},
+  {theme:"抱怨委婉",phrase:"I don't mean to complain, but it's been a bit of a challenge getting this sorted out.",phraseZh:"不是我想抱怨，但解决这事确实有点费劲。",phraseUse:"用 我不抱怨 开头来温和表达不满，职场高情商",dialogue:[{r:"A",t:"How's the onboarding going? Settling in okay?"},{r:"B",t:"Honestly, I don't mean to complain, but it's been a bit of a challenge getting everything sorted out."},{r:"A",t:"I hear you. The first week can be overwhelming. What's been the trickiest part?"},{r:"B",t:"Mostly the IT setup. Once that's done I think I'll be fine."}],vocab:[["I don't mean to","不是我想..."],["sort out","整理好，解决"],["onboarding","入职"],["overwhelming","令人应接不暇的"],["trickiest","最棘手的"]],shadow:"I don't mean to complain, but it's been a bit of a challenge getting this sorted out. Once that's done I think I'll be fine."},
+  {theme:"鼓励他人",phrase:"You've got this! I know it's nerve-racking, but you've done the prep and you're more than ready.",phraseZh:"你可以的！我知道很紧张，但你已经做好了准备，完全没问题。",phraseUse:"给朋友考前/面试前打气的经典句式",dialogue:[{r:"A",t:"I'm freaking out about this presentation. What if I blank out?"},{r:"B",t:"You've got this! I know it's nerve-racking, but you've done the prep and you're more than ready."},{r:"A",t:"You think so? I keep second-guessing myself."},{r:"B",t:"Look, you know this material inside and out. Just take a deep breath and be yourself."}],vocab:[["You've got this","你可以的/你行的"],["nerve-racking","令人紧张的"],["blank out","大脑一片空白"],["second-guess","怀疑自己"],["inside and out","了如指掌"]],shadow:"You've got this! I know it's nerve-racking, but you've done the prep and you're more than ready. Just take a deep breath and be yourself."},
+  {theme:"闲聊天气",phrase:"Can't complain the weather's been gorgeous lately. Perfect for outdoor plans.",phraseZh:"没什么可抱怨的，最近天气超好，特别适合户外活动。",phraseUse:"回答 How are you 时有内容地敷衍，适合社交场景",dialogue:[{r:"A",t:"How's your weekend been so far?"},{r:"B",t:"Can't complain - the weather's been gorgeous lately. Perfect for outdoor plans."},{r:"A",t:"I know, right? I finally got to use my bike. Feels like summer finally showed up."},{r:"B",t:"About time! Last month was nothing but rain."}],vocab:[["can't complain","还不错/没什么可抱怨的"],["gorgeous","非常棒/美"],["outdoor plans","户外安排"],["about time","终于/也该...了"],["nothing but","全是..."]],shadow:"Can't complain - the weather's been gorgeous lately, perfect for outdoor plans. I know, right? About time!"},
+  {theme:"寻求建议",phrase:"What would you do if you were in my shoes? I'm really torn between these two options.",phraseZh:"如果你是我，你会怎么做？我在两个选择之间很纠结。",phraseUse:"真诚求助的经典表达，带出选择困难的感觉",dialogue:[{r:"A",t:"What would you do if you were in my shoes? I'm really torn between staying in my current job and taking this new offer."},{r:"B",t:"That's tough. What does your gut tell you?"},{r:"A",t:"Honestly? The new offer excites me more, but it feels risky."},{r:"B",t:"Sometimes the scariest choices lead to the best outcomes. What's the worst that could happen?"}],vocab:[["in your shoes","处在你的位置"],["torn between","在...之间纠结"],["gut","直觉"],["scariest","最可怕的"],["outcome","结果"]],shadow:"What would you do if you were in my shoes? I'm really torn between these two options. Sometimes the scariest choices lead to the best outcomes."},
+  {theme:"表达赞同",phrase:"You hit the nail on the head. That's exactly what I've been trying to say.",phraseZh:"你说到点子上了，这正是我想说的。",phraseUse:"强烈赞同时的地道表达，hit the nail on the head 是高频成语",dialogue:[{r:"A",t:"I think the main issue isn't the budget. It's that we're not communicating clearly across teams."},{r:"B",t:"You hit the nail on the head. That's exactly what I've been trying to say."},{r:"A",t:"Right? We keep throwing money at the problem instead of fixing the root cause."},{r:"B",t:"Maybe we should suggest a cross-team sync every Monday. Keep everyone on the same page."}],vocab:[["hit the nail on the head","一语中的"],["root cause","根本原因"],["cross-team","跨团队"],["on the same page","步调一致"],["throw money at","砸钱解决"]],shadow:"You hit the nail on the head. That's exactly what I've been trying to say. Keep everyone on the same page."},
+  {theme:"催促委婉",phrase:"Hey, just wanted to gently nudge on this. Any updates you can share?",phraseZh:"嘿，轻轻催一下这个，有什么进展可以分享吗？",phraseUse:"职场上轻轻催人但不想显得pushy的黄金句型",dialogue:[{r:"A",t:"Hey, just wanted to gently nudge on the Q3 report. Any updates you can share?"},{r:"B",t:"Thanks for the reminder! I'm wrapping it up right now. Should have it in your inbox by EOD."},{r:"A",t:"No rush, just wanted to make sure nothing fell through the cracks."},{r:"B",t:"Appreciate it. I'll ping you as soon as it's done."}],vocab:[["nudge","轻推/提醒"],["wrapping up","收尾"],["EOD","end of day 下班前"],["fell through the cracks","被遗漏"],["ping","通知/联系"]],shadow:"Hey, just wanted to gently nudge on this. Any updates you can share? I'm wrapping it up right now. Should have it by EOD."},
+  {theme:"接话技巧",phrase:"That's a really interesting point. It actually reminds me of something I read recently about...",phraseZh:"这个观点很有意思，让我想起来最近看到的一个...",phraseUse:"万能接话模板，让你在社交场合永远不冷场",dialogue:[{r:"A",t:"I think remote work has fundamentally changed how we think about productivity."},{r:"B",t:"That's a really interesting point. It actually reminds me of something I read recently about how companies are redesigning their offices."},{r:"A",t:"Oh yeah? What did it say?"},{r:"B",t:"Basically that the office is becoming a collaboration hub rather than a place to do focused work."}],vocab:[["fundamentally","根本上"],["reminds me of","让我想起"],["redesign","重新设计"],["collaboration hub","协作中心"],["focused work","专注工作"]],shadow:"That's a really interesting point. It actually reminds me of something I read recently. The office is becoming a collaboration hub."},
+  {theme:"会议插话",phrase:"Sorry to jump in, but I just wanted to add one quick thing before we move on.",phraseZh:"抱歉打断一下，在往下走之前我想快速补充一点。",phraseUse:"会议中优雅插话的必备句型",dialogue:[{r:"A",t:"So to summarize, we'll roll out the new feature in phases starting next month."},{r:"B",t:"Sorry to jump in, but I just wanted to add one quick thing before we move on."},{r:"A",t:"Of course, go ahead."},{r:"B",t:"I think we should also loop in the design team early. They raised some valid concerns last time we launched without them."}],vocab:[["jump in","插话"],["roll out","推出/上线"],["loop in","让...参与进来"],["valid concerns","合理的担忧"],["go ahead","请说/继续"]],shadow:"Sorry to jump in, but I just wanted to add one quick thing. I think we should also loop in the design team early."},
+  {theme:"表达失望",phrase:"I have to say, I'm a little disappointed with how things turned out, but I'm sure there's a good reason.",phraseZh:"不得不说，我对结果有点失望，但我相信一定有合理的理由。",phraseUse:"委婉表达失望但不攻击他人的高情商说法",dialogue:[{r:"A",t:"So the client went with the other proposal. They said our timeline was too aggressive."},{r:"B",t:"I have to say, I'm a little disappointed with how things turned out, but I'm sure there's a good reason."},{r:"A",t:"Yeah, honestly I think we could have been more realistic in our pitch. Lesson learned."},{r:"B",t:"Exactly. Let's use this as a learning experience for the next one."}],vocab:[["turned out","结果是"],["aggressive","激进/过于乐观的"],["pitch","提案/推销"],["lesson learned","吸取教训"],["learning experience","学习经验"]],shadow:"I have to say, I'm a little disappointed with how things turned out. Let's use this as a learning experience for the next one."},
+  {theme:"打开话匣",phrase:"I couldn't help but notice your backpack. Are you into hiking too?",phraseZh:"我注意到你的背包，你也喜欢徒步吗？",phraseUse:"陌生人社交破冰的金句，I couldn't help but notice... 万能开头",dialogue:[{r:"A",t:"I couldn't help but notice your backpack. Are you into hiking too?"},{r:"B",t:"Yeah, actually! Just got back from a trip to the mountains last weekend."},{r:"A",t:"No way! Which trail did you do? I've been looking for new spots."},{r:"B",t:"Eagle Rock loop. It's about 8 miles, not too intense. You'd love it."}],vocab:[["couldn't help but notice","忍不住注意到"],["are you into","你喜欢...吗"],["no way","真的吗/不会吧"],["spot","地点/去处"],["intense","激烈的/高强度的"]],shadow:"I couldn't help but notice your backpack. Are you into hiking too? No way! You'd love it."},
+  {theme:"讲故事",phrase:"So there I was, completely lost in a city where I didn't speak the language. And then the funniest thing happened...",phraseZh:"然后我就那样，在一个语言不通的城市里完全迷路了。然后最好笑的事发生了...",phraseUse:"讲故事的经典开场，So there I was 铺悬念感",dialogue:[{r:"A",t:"So there I was, completely lost in a city where I didn't speak the language. And then the funniest thing happened."},{r:"B",t:"Oh no, what?"},{r:"A",t:"This little old lady walks up to me, doesn't say a word, just grabs my arm and leads me to the exact street I was looking for."},{r:"B",t:"Wait, how did she know where you needed to go?"},{r:"A",t:"No idea! She just smiled and walked away. I still think about that."}],vocab:[["completely lost","完全迷路"],["funniest thing","最好笑的事"],["walks up to","走向"],["no idea","不知道"],["exact","确切的"]],shadow:"So there I was, completely lost in a city where I didn't speak the language. And then the funniest thing happened. No idea! She just smiled and walked away."},
+  {theme:"给建议",phrase:"If I were you, I'd start small and build from there. No need to overhaul everything at once.",phraseZh:"如果我是你，我会从小处开始慢慢来，没必要一次性全部推倒重来。",phraseUse:"给建议时最地道的虚拟语气句型",dialogue:[{r:"A",t:"I'm thinking about starting my own side project but I don't even know where to begin."},{r:"B",t:"If I were you, I'd start small and build from there. No need to overhaul everything at once."},{r:"A",t:"That makes sense. Like picking one tiny feature and just shipping it?"},{r:"B",t:"Exactly! The key is momentum. Once you ship something, no matter how small, you'll want to keep going."}],vocab:[["If I were you","如果我是你（虚拟语气）"],["start small","从小处开始"],["overhaul","彻底改革"],["momentum","动力/势头"],["no matter how","不管多么..."]],shadow:"If I were you, I'd start small and build from there. No need to overhaul everything at once. The key is momentum."},
+  {theme:"问隐私",phrase:"If you don't mind me asking, how did you end up in this field? That's quite an interesting career path.",phraseZh:"不介意的话问一下，你是怎么进入这个领域的？你的职业经历挺有趣的。",phraseUse:"打听隐私前先铺垫的黄金句型",dialogue:[{r:"A",t:"If you don't mind me asking, how did you end up in this field? That's quite an interesting career path."},{r:"B",t:"Not at all! It's actually kind of a funny story. I started in marketing and just kind of fell into it."},{r:"A",t:"Really? That's a big shift. What made you switch?"},{r:"B",t:"Honestly, I took a coding bootcamp on a whim and never looked back."}],vocab:[["if you don't mind me asking","不介意的话问一下"],["end up in","最终进入"],["career path","职业路径"],["fell into","无意中进入"],["on a whim","一时兴起"],["never looked back","从不后悔"]],shadow:"If you don't mind me asking, how did you end up in this field? That's quite an interesting career path. I took a bootcamp on a whim and never looked back."},
+  {theme:"拖延承认",phrase:"I have to come clean - I completely procrastinated on this and now I'm scrambling to finish.",phraseZh:"我得老实交代，我完全拖延了这个，现在正在手忙脚乱地赶。",phraseUse:"坦承拖延的诚实说法，比找借口更容易获得理解",dialogue:[{r:"A",t:"Hey, how's the report coming along? The deadline is tomorrow morning."},{r:"B",t:"I have to come clean - I completely procrastinated on this and now I'm scrambling to finish."},{r:"A",t:"Been there! How much is left?"},{r:"B",t:"About 60%. I'll probably be pulling an all-nighter, but I'll get it done."},{r:"A",t:"Alright, I trust you. Send me a draft by 10 PM so I can at least glance at it."}],vocab:[["come clean","坦白/老实交代"],["procrastinate","拖延"],["scrambling","手忙脚乱"],["pulling an all-nighter","通宵赶工"],["get it done","搞定"]],shadow:"I have to come clean - I completely procrastinated on this and now I'm scrambling to finish. Been there! I'll be pulling an all-nighter, but I'll get it done."},
+  {theme:"结束对话",phrase:"Well, I should probably let you go. It was really great catching up with you!",phraseZh:"那我就不打扰你了，跟你聊聊近况真好！",phraseUse:"自然结束对话的万能句型，不尴尬不突兀",dialogue:[{r:"A",t:"Well, I should probably let you go. It was really great catching up with you!"},{r:"B",t:"Same here! This was long overdue. Let's not wait another six months."},{r:"A",t:"Agreed! I'll text you next week and we can set something up."},{r:"B",t:"Sounds like a plan. Take care and say hi to everyone for me!"},{r:"A",t:"Will do! Catch you later."}],vocab:[["let you go","不打扰你了"],["catching up","叙旧/聊聊近况"],["long overdue","早就该...的"],["sounds like a plan","就这么定了"],["say hi to","代为问候"]],shadow:"Well, I should probably let you go. It was really great catching up with you! Let's not wait another six months. Sounds like a plan!"}
+];
+
+function getDayIndex() {
+  const now = new Date();
+  const start = new Date(2026, 7, 1); // Aug 1, 2026 as curriculum start
+  const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+  return ((diff % ENG_CURRICULUM.length) + ENG_CURRICULUM.length) % ENG_CURRICULUM.length;
+}
+
+function getTodayEngContent() {
+  const idx = getDayIndex();
+  return ENG_CURRICULUM[idx];
+}
+
+function renderEngTasks() {
+  const d = getTodayEngContent();
+  const today = new Date();
+  const ds = today.toISOString().split('T')[0];
+  const checkedIn = store.engCheckins.includes(ds);
+  
+  document.getElementById('eng-task-date').textContent = (today.getMonth()+1) + '月' + today.getDate() + '日';
+  document.getElementById('eng-task-theme').textContent = d.theme;
+
+  const container = document.getElementById('eng-tasks-content');
+  let html = '';
+
+  // TTS control bar
+  html += '<div class="tts-bar">';
+  html += '<label>🔊 朗读</label>';
+  html += '<select id="tts-lang-sel" onchange="ttsLang=this.value">';
+  html += '<option value="en-US">🇺🇸 美式</option>';
+  html += '<option value="en-GB">🇬🇧 英式</option>';
+  html += '<option value="en-AU">🇦🇺 澳式</option>';
+  html += '</select>';
+  html += '<label>语速</label>';
+  html += '<input type="range" min="0.5" max="1.3" step="0.1" value="0.9" onchange="ttsRate=parseFloat(this.value);document.getElementById(\'tts-rate-lbl\').textContent=this.value+\'x\'">';
+  html += '<span id="tts-rate-lbl" style="color:var(--text3);min-width:28px;">0.9x</span>';
+  html += '<button onclick="speakDialogueAll()">▶️ 朗读全对话</button>';
+  html += '<button class="tts-stop" onclick="stopTTS()">⏹ 停止</button>';
+  html += '</div>';
+
+  // Task 1: Daily Phrase
+  html += '<div class="daily-phrase-card">';
+  html += '<div style="font-size:0.75rem;color:var(--text3);margin-bottom:6px;">📌 任务一 · 每日一句</div>';
+  html += '<div class="daily-phrase-en">' + d.phrase.replace(/'/g, '&#39;') + ' <span class="speak-btn" data-t="' + encodeURIComponent(d.phrase) + '" onclick="speakText(decodeURIComponent(this.dataset.t),this)">🔊</span></div>';
+  html += '<div class="daily-phrase-zh">' + d.phraseZh + '</div>';
+  html += '<div class="daily-phrase-use">💡 ' + d.phraseUse + '</div>';
+  html += '</div>';
+
+  // Task 2: Dialogue
+  html += '<div class="card" style="margin-bottom:16px;">';
+  html += '<div style="font-size:0.85rem;font-weight:600;margin-bottom:12px;"><span class="emoji">💬</span>任务二 · 情景对话</div>';
+  d.dialogue.forEach(line => {
+    html += '<div class="dialogue-line ' + line.r.toLowerCase() + '">';
+    html += '<div class="dialogue-speaker">' + (line.r === 'A' ? '🧑 Speaker A' : '👤 Speaker B') + '</div>';
+    html += line.t.replace(/'/g, '&#39;') + ' <span class="speak-btn" data-t="' + encodeURIComponent(line.t) + '" onclick="speakText(decodeURIComponent(this.dataset.t),this)">🔊</span></div>';
+  });
+  html += '<div style="font-size:0.75rem;color:var(--text3);margin-top:8px;">🎯 点击🔊逐句朗读，或点"朗读全对话"连续播放。注意语调和连读，尝试不看文本复述。</div>';
+  html += '</div>';
+
+  // Task 3: Vocab
+  html += '<div class="card" style="margin-bottom:16px;">';
+  html += '<div style="font-size:0.85rem;font-weight:600;margin-bottom:10px;"><span class="emoji">📖</span>任务三 · 今日词汇（' + d.vocab.length + '个）</div>';
+  html += '<div class="vocab-grid">';
+  d.vocab.forEach(v => {
+    html += '<div class="vocab-item"><div class="vocab-word">' + v[0] + ' <span class="speak-btn" data-t="' + encodeURIComponent(v[0]) + '" onclick="speakText(decodeURIComponent(this.dataset.t),this)">🔊</span></div><div class="vocab-def">' + v[1] + '</div></div>';
+  });
+  html += '</div></div>';
+
+  container.innerHTML = html;
+
+  // Update check-in button state
+  const btn = document.getElementById('eng-checkin-btn');
+  if (checkedIn) {
+    btn.textContent = '✅ 今日已完成打卡';
+    btn.style.background = 'var(--green)';
+    btn.style.boxShadow = '0 4px 14px rgba(107,203,119,0.25)';
+    btn.disabled = true;
+  } else {
+    btn.textContent = '✅ 完成今日打卡';
+    btn.style.background = '';
+    btn.style.boxShadow = '';
+    btn.disabled = false;
+  }
+  
+  // Streak message
+  const streak = calcEngStreak();
+  document.getElementById('eng-streak-msg').textContent = streak > 0 ? '🔥 已连续打卡 ' + streak + ' 天，继续加油！' : '今天会是你的第1天吗？';
+}
+
+function renderEngShadowing() {
+  const d = getTodayEngContent();
+  const container = document.getElementById('eng-shadowing-content');
+  let html = '<div style="font-size:0.9rem;line-height:1.9;padding:8px 0;color:var(--text);background:var(--bg-card2);border-radius:8px;padding:16px;">';
+  html += '<div style="font-size:0.72rem;color:var(--text3);margin-bottom:6px;">📢 Shadowing 素材 · 跟读这段话：</div>';
+  html += d.shadow.replace(/'/g, '&#39;') + ' <span class="speak-btn" data-t="' + encodeURIComponent(d.shadow) + '" onclick="speakText(decodeURIComponent(this.dataset.t),this)" style="font-size:1.1rem;">🔊</span>';
+  html += '</div>';
+  html += '<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">';
+  html += '<span class="tag tag-blue">连读练习</span><span class="tag tag-orange">语调模仿</span><span class="tag tag-green">中速朗读</span><span class="tag tag-purple">不看文本复述</span>';
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// --- Video recommendations by theme ---
+const THEME_VIDEO_MAP = {
+  "日常问候":"English greeting small talk conversation",
+  "点餐场景":"English ordering food restaurant conversation",
+  "问路指路":"English asking for directions conversation",
+  "购物砍价":"English shopping bargaining conversation",
+  "The Enhanced Games":"BBC 6 Minute English The Enhanced Games doping in sport",
+  "约会闲聊":"English date small talk conversation",
+  "表达观点":"English expressing opinion politely",
+  "天气闲聊":"English small talk weather conversation",
+  "表达感谢":"English expressing gratitude formally",
+  "面试场景":"English job interview conversation",
+  "电话沟通":"English business phone call conversation",
+  "道歉回应":"English apologizing and responding",
+  "旅行问询":"English travel asking locals conversation",
+  "邀约拒绝":"English declining invitation politely",
+  "表达困惑":"English asking for clarification conversation",
+  "健身房":"English gym conversation small talk",
+  "抱怨委婉":"English complaining politely workplace",
+  "鼓励他人":"English encouraging someone words",
+  "闲聊天气":"English small talk weather gorgeous",
+  "寻求建议":"English asking for advice conversation",
+  "表达赞同":"English agreeing strongly conversation",
+  "催促委婉":"English following up politely email",
+  "接话技巧":"English conversation衔接 keeping conversation going",
+  "会议插话":"English meeting interrupting politely",
+  "表达失望":"English expressing disappointment politely",
+  "打开话匣":"English breaking ice stranger conversation",
+  "讲故事":"English storytelling conversation natural",
+  "给建议":"English giving advice conversation",
+  "问隐私":"English asking personal questions politely",
+  "拖延承认":"English admitting procrastination conversation",
+  "结束对话":"English ending conversation naturally"
+};
+
+const VID_CHANNELS = [
+  {cat:"🗣️ 日常社交",name:"Speak English with Vanessa",desc:"美式口语+真实生活场景，500万订阅，每集一个实用表达场景",url:"https://www.youtube.com/@speakenglishwithvanessa",icon:"🇺🇸",color:"var(--coral-light)"},
+  {cat:"🗣️ 日常社交",name:"English with Lucy",desc:"英式英语+日常会话，Lucy老师讲解地道表达，550万订阅",url:"https://www.youtube.com/@EnglishwithLucy",icon:"🇬🇧",color:"var(--blue-light)"},
+  {cat:"🍽️ 生活场景",name:"Learn English with TV Series",desc:"用美剧/英剧片段学真实口语，场景代入感强，适合看电影学英语",url:"https://www.youtube.com/@LearnEnglishWithTVSeries",icon:"🎬",color:"var(--purple-light)"},
+  {cat:"🍽️ 生活场景",name:"Bob the Canadian",desc:"加拿大老师，真实场景拍摄（超市/餐厅/机场），沉浸式学日常英语",url:"https://www.youtube.com/@BobtheCanadian",icon:"🇨🇦",color:"var(--green-light)"},
+  {cat:"💼 职场商务",name:"Business English Pod",desc:"职场英语专项：会议/邮件/电话/演讲，系统化课程，适合职场进阶",url:"https://www.youtube.com/@BusinessEnglishPod",icon:"💼",color:"var(--orange-light)"},
+  {cat:"💼 职场商务",name:"BBC Learning English",desc:"BBC官方频道，含English at Work系列（职场情景剧）+ 6 Minute English",url:"https://www.youtube.com/@BBCLearningEnglish",icon:"🇬🇧",color:"var(--teal-light)"},
+  {cat:"🎯 发音纠正",name:"Rachel's English",desc:"美式发音权威，逐音标拆解连读/弱读/语调，500万订阅",url:"https://www.youtube.com/@rachelsenglish",icon:"🎤",color:"var(--pink-light)"},
+  {cat:"🎯 发音纠正",name:"mmmEnglish (Emma)",desc:"澳洲Emma老师，语法可视化+Shadowing跟读，适合中级学习者",url:"https://www.youtube.com/@mmmEnglish_emma",icon:"🇦🇺",color:"var(--yellow-light)"},
+  {cat:"📖 词汇表达",name:"English Fluency Journey",desc:"高频词汇+短语动词+习语，沉浸式重复训练，适合碎片时间",url:"https://www.youtube.com/@EnglishFluencyJourney",icon:"📖",color:"var(--coral-light)"},
+  {cat:"📖 词汇表达",name:"BBC 6 Minute English",desc:"BBC经典6分钟英语，每集一个话题+词汇表，音频+视频版均有",url:"https://www.youtube.com/playlist?list=PLcetZ6g996pQ3DE8D8M2z3Tm7n5j7z3Fz",icon:"🎧",color:"var(--blue-light)"}
+];
+
+function renderVidRec() {
+  const d = getTodayEngContent();
+  // Theme-based search
+  const themeTag = document.getElementById('vid-theme-tag');
+  if (themeTag) themeTag.textContent = d.theme;
+  const themeC = document.getElementById('vid-theme-content');
+  if (themeC) {
+    const q = THEME_VIDEO_MAP[d.theme] || ('English ' + d.theme + ' conversation');
+    const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q);
+    themeC.innerHTML = '<div class="vid-rec-card">' +
+      '<div class="vid-rec-icon">🔍</div>' +
+      '<div class="vid-rec-info">' +
+      '<div class="vid-rec-name">今日主题「' + d.theme + '」相关视频</div>' +
+      '<div class="vid-rec-desc">点击在 YouTube 搜索「' + q + '」，找到真实情景对话教学视频</div>' +
+      '<div class="vid-rec-link"><a href="' + ytUrl + '" target="_blank" style="color:var(--blue);">▶️ 在 YouTube 搜索 →</a></div>' +
+      '</div></div>';
+  }
+  // Channel list grouped by category
+  const chC = document.getElementById('vid-channels-content');
+  if (chC) {
+    const cats = {};
+    VID_CHANNELS.forEach(ch => { if (!cats[ch.cat]) cats[ch.cat] = []; cats[ch.cat].push(ch); });
+    let html = '';
+    Object.keys(cats).forEach(cat => {
+      html += '<div style="font-size:0.78rem;font-weight:600;color:var(--text3);margin:10px 0 6px;">' + cat + '</div>';
+      cats[cat].forEach(ch => {
+        html += '<div class="vid-rec-card">' +
+          '<div class="vid-rec-icon" style="background:' + ch.color + ';width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;">' + ch.icon + '</div>' +
+          '<div class="vid-rec-info">' +
+          '<div class="vid-rec-name">' + ch.name + '</div>' +
+          '<div class="vid-rec-desc">' + ch.desc + '</div>' +
+          '<div class="vid-rec-link"><a href="' + ch.url + '" target="_blank" style="color:var(--blue);">▶️ 打开频道 →</a></div>' +
+          '</div></div>';
+      });
+    });
+    chC.innerHTML = html;
+  }
+}
+
+function doEnglishCheckin() {
+  const today = new Date().toISOString().split('T')[0];
+  if (store.engCheckins.includes(today)) { showToast('今天已经打卡过啦 ✅'); return; }
+  store.engCheckins.push(today);
+  store.engCheckins.sort();
+  saveStore();
+  renderEngTasks();
+  renderEngCheckin();
+  const streak = calcEngStreak();
+  showToast(streak > 1 ? '🔥 连续打卡 ' + streak + ' 天！' : '🎉 第一天打卡成功！');
+}
+
+function calcEngStreak() {
+  const checks = new Set(store.engCheckins);
+  let count = 0;
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  while (true) {
+    const s = d.toISOString().split('T')[0];
+    if (checks.has(s)) { count++; d.setDate(d.getDate() - 1); }
+    else break;
+  }
+  return count;
+}
+
+function renderEngCheckin() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const today = now.getDate();
+  const todayStr = now.toISOString().split('T')[0];
+  const checks = new Set(store.engCheckins);
+
+  document.getElementById('eng-cal-month').textContent = (month+1) + '月';
+  const streak = calcEngStreak();
+  document.getElementById('eng-cal-streak').textContent = '连续 ' + streak + ' 天';
+  document.getElementById('eng-streak-count').textContent = streak;
+
+  const monthChecks = store.engCheckins.filter(d => d.startsWith(now.toISOString().slice(0,7)));
+  document.getElementById('eng-month-count').textContent = monthChecks.length;
+
+  const grid = document.getElementById('eng-checkin-grid');
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const firstDay = new Date(year, month, 1).getDay();
+  const startDay = firstDay === 0 ? 6 : firstDay - 1;
+
+  let html = '';
+  for (let i = 0; i < startDay; i++) html += '<div class="checkin-day" style="background:transparent;border:none;"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = year + '-' + String(month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    const cls = (checks.has(ds) ? ' done' : '') + (d === today ? ' today' : '');
+    html += '<div class="checkin-day' + cls + '" title="' + ds + '">' + d + (checks.has(ds) ? '<span class="check-emoji">✓</span>' : '') + '</div>';
+  }
+  grid.innerHTML = html;
+
+  // History list
+  const list = document.getElementById('eng-checkin-list');
+  const sorted = [...store.engCheckins].sort().reverse().slice(0, 30);
+  if (!sorted.length) {
+    list.innerHTML = '<div style="color:var(--text3);text-align:center;padding:20px;">开始你的英语口语打卡之旅吧 🚀</div>';
+    return;
+  }
+  list.innerHTML = sorted.map(ds => {
+    const d = store.engCheckins.indexOf(ds);
+    const dayIdx = ((new Date(ds) - new Date(2026,7,1)) / 86400000);
+    const idx = ((dayIdx % ENG_CURRICULUM.length) + ENG_CURRICULUM.length) % ENG_CURRICULUM.length;
+    const theme = ENG_CURRICULUM[idx] ? ENG_CURRICULUM[idx].theme : '英语学习';
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px;font-size:0.85rem;border-bottom:1px solid var(--border);">' +
+      '<span>📅 ' + ds + ' · <strong>' + theme + '</strong></span>' +
+      '<span class="tag tag-coral" style="font-size:0.65rem;">✓</span></div>';
+  }).join('');
+}
+
+function switchEnglishTab(name) {
+  document.querySelectorAll('#english-nav-cards .subnav-card').forEach(c => c.classList.remove('active'));
+  const activeCard = document.querySelector('#english-nav-cards .sc-' + name);
+  if (activeCard) activeCard.classList.add('active');
+  document.querySelectorAll('.eng-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('english-' + name);
+  if (panel) panel.classList.add('active');
+  if (name === 'tasks') renderEngTasks();
+  if (name === 'speaking') { renderEngShadowing(); renderVidRec(); }
+  if (name === 'checkin') renderEngCheckin();
+}
+
+// ========== INIT ==========
+function init() {
+  renderExerciseGrid();
+  renderExerciseList();
+  renderLifeTracker();
+  renderJournalToday();
+  renderJournals();
+  renderDoneItems();
+  renderBooks();
+  renderNotes();
+  renderEngTasks();
+  renderEngShadowing();
+  renderEngCheckin();
+  renderVidRec();
+  // Trigger TTS voice loading
+  if (window.speechSynthesis) { window.speechSynthesis.getVoices(); window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices(); }; }
+}
+init();
+
+// ========== PWA: Register Service Worker ==========
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(() => {
+    console.log('SW registered');
+  }).catch(() => {});
+}
+// ========== PWA: Standalone Install Prompt ==========
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show install banner if not in standalone mode
+  if (!window.matchMedia('(display-mode: standalone)').matches) {
+    setTimeout(() => {
+      const banner = document.createElement('div');
+      banner.id = 'install-banner';
+      banner.style.cssText = 'position:fixed;bottom:80px;left:16px;right:16px;background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:#fff;padding:16px;border-radius:16px;z-index:200;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 32px rgba(255,107,107,0.4);animation:fadeIn 0.4s ease;font-size:0.9rem;max-width:500px;margin:0 auto;';
+      banner.innerHTML = '<span>📲 <strong>安装到手机桌面</strong><br><span style="font-size:0.75rem;opacity:0.9;">像 App 一样使用，随时打开</span></span><div style="display:flex;gap:6px;"><button id="install-btn" style="background:#fff;color:#FF6B6B;border:none;padding:8px 14px;border-radius:20px;font-weight:600;cursor:pointer;font-size:0.8rem;">安装</button><button id="dismiss-install" style="background:transparent;color:#fff;border:none;padding:8px;cursor:pointer;font-size:1.2rem;opacity:0.7;">✕</button></div>';
+      document.body.appendChild(banner);
+      document.getElementById('install-btn').onclick = () => { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { banner.remove(); }); };
+      document.getElementById('dismiss-install').onclick = () => banner.remove();
+    }, 2000);
+  }
+});
+</script>
+</body>
+</html>
